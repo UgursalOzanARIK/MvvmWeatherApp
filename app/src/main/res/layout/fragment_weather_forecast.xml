@@ -7,14 +7,132 @@
     android:background="@drawable/weatherforecastbg"
     tools:context=".ui.fragments.WeatherForecastFragment">
 
-    <Button
-        android:id="@+id/buttonGet"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="283dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCityName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="487dp"
-        android:text="Button"
+        android:layout_marginTop="128dp"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="Ankara"
+        android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTempToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="5 °C"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCityName" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvHumidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/raleway_semibold"
+        android:text="TextView"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewHumidity" />
+
+    <ImageView
+        android:id="@+id/imageViewHumidity"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewWindSpeed"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
+        tools:src="@tools:sample/avatars" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="1.5dp"
+        android:layout_height="150dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewWindSpeed"
+        app:layout_constraintStart_toEndOf="@+id/imageViewHumidity"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempToday" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="1.5dp"
+        android:layout_height="150dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewChanceofRain"
+        app:layout_constraintStart_toEndOf="@+id/imageViewWindSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
+        app:layout_constraintVertical_bias="0.444" />
+
+    <SearchView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewWindSpeed"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewChanceofRain"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageViewHumidity"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/imageViewChanceofRain"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageViewWindSpeed"
+        app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="165dp"
+        tools:layout_editor_absoluteY="400dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

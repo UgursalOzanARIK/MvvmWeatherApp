@@ -78,11 +78,6 @@ class WeatherForecastFragment : Fragment() {
 
                             }
 
-
-
-
-
-
                         }
                         is Resource.Error->{
                             Log.e("asd",forecastResponse.message.toString())
