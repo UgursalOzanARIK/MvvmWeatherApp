@@ -1,23 +1,21 @@
-package com.ozanarik.mvvmweatherapp
+package com.ozanarik.mvvmweatherapp.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ozanarik.mvvmweatherapp.databinding.FragmentSettingsBinding
+import com.ozanarik.mvvmweatherapp.R
 
-class SettingsFragment : Fragment() {
-    private lateinit var binding: FragmentSettingsBinding
+class WeeklyWeatherFragment : Fragment() {
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): View? {
         // Inflate the layout for this fragment
-
-
-        binding = FragmentSettingsBinding.inflate(inflater,container,false)
-        return binding.root
+        return inflater.inflate(R.layout.fragment_weekly_weather, container, false)
     }
 
 }

@@ -2,17 +2,17 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_nav"
+    android:id="@+id/mainactivitynav"
     app:startDestination="@id/weatherForecastFragment">
 
     <fragment
         android:id="@+id/weatherForecastFragment"
-        android:name="com.ozanarik.mvvmweatherapp.WeatherForecastFragment"
+        android:name="com.ozanarik.mvvmweatherapp.ui.fragments.WeatherForecastFragment"
         android:label="fragment_weather_forecast"
         tools:layout="@layout/fragment_weather_forecast" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.ozanarik.mvvmweatherapp.SettingsFragment"
+        android:name="com.ozanarik.mvvmweatherapp.ui.fragments.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
 </navigation>

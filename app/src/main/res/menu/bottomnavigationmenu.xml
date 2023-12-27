@@ -5,10 +5,12 @@
         android:id="@+id/weatherForecastFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/forecasticon"
         android:title="Weather" />
     <item
         android:id="@+id/settingsFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/settingsicon"
         android:title="Settings" />
 </menu>
