@@ -9,6 +9,10 @@ android {
     namespace = "com.ozanarik.mvvmweatherapp"
     compileSdk = 34
 
+    buildFeatures{
+        viewBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.ozanarik.mvvmweatherapp"
         minSdk = 24
