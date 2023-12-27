@@ -4,7 +4,7 @@ class Constants {
 
     companion object{
 
-        val BASE_URL = "api.openweathermap.org/data/2.5/"
+        val BASE_URL = "https://api.openweathermap.org/data/2.5/"
         val APPID = "c90c3da5cb748b3d39a25d114bd29dfd"
 
     }
