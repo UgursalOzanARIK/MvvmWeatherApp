@@ -1,5 +1,6 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -7,26 +8,29 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.ozanarik.mvvmweatherapp.Forecast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
+import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class WeatherForecastFragment : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var binding: FragmentWeatherForecastBinding
-    @RequiresApi(Build.VERSION_CODES.O)
+    private lateinit var weatherAdapter: WeatherAdapter
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,63 +39,84 @@ class WeatherForecastFragment : Fragment() {
 
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
+        weatherAdapter = WeatherAdapter()
 
 
 
-        binding.buttonGet.setOnClickListener {
 
-            weatherViewModel.getWeatherForecastByLatitudeLongitude("44.34","10.99")
-            viewLifecycleOwner.lifecycleScope.launch {
-                weatherViewModel.forecastResponse.collect{forecastResponse->
-                    when(forecastResponse){
-                        is Resource.Success->{
+        return (binding.root)
+    }
 
-                            val date = LocalDate.now()
-                            val currentDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-                            val tomorrowDate = date.plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        setUpWeatherRecyclerView()
+        getWeatherForecast("44.34","10.99")
 
-
-                            val tomorrowForecastList = mutableListOf<WeatherList>()
-
-                            val forecastList = forecastResponse.data!!.list
-                            val todayForecastList = mutableListOf<WeatherList>()
-
-                            forecastList.forEach { weather->
-
-                                if (weather.dtTxt!!.split("\\s".toRegex()).contains(currentDate)){
-                                    todayForecastList.add(weather)
-                                }else if (weather.dtTxt!!.split("\\s".toRegex()).contains(tomorrowDate)){
-                                    tomorrowForecastList.add(weather)
-                                }
-
-                                tomorrowForecastList.forEach { weatherTomorrow->
-                                    Log.e("tomorrow","$tomorrowDate = ${weatherTomorrow.dtTxt}")
-                                }
+    }
 
 
-                                todayForecastList.forEach { weatherList->
-                                    Log.e("asd",weatherList.dtTxt.toString())
 
-                                }
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getWeatherForecast(latitude:String,longitude:String){
 
+        weatherViewModel.getWeatherForecastByLatitudeLongitude(latitude,longitude)
+        viewLifecycleOwner.lifecycleScope.launch {
 
+            weatherViewModel.forecastResponse.collect{forecastResponse->
+                when(forecastResponse){
+                    is Resource.Success->{
+                        val forecastList = forecastResponse.data!!.list
+                        val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+                        val todayList = mutableListOf<WeatherList>()
+
+                        forecastList.forEach { weather->
+
+                            if (weather.dtTxt!!.split("\\s".toRegex()).contains(todayDate)){
+                                todayList.add(weather)
                             }
+                        }
 
-                        }
-                        is Resource.Error->{
-                            Log.e("asd",forecastResponse.message.toString())
-                        }
-                        is Resource.Loading->{
+                        todayList.let { weatherAdapter.differList.submitList(it) }
 
-                            Log.e("asd","loading")
-                        }
+                        binding.tvWindSpeed.text = todayList[0].wind!!.speed.toString()
+                        binding.tvHumidity.text = todayList[0].main!!.humidity.toString()
+                        binding.tvCityName.text = forecastResponse.data.city!!.name
+                        binding.imageViewNowIcon.setImageResource(R.drawable.humidity)
+
+                        binding.tvSunriseSet.text = todayList[0].weather[0].description!!.uppercase()
+
+                  //      binding.tvSunriseSet.text = "${forecastResponse.data.city!!.sunrise} / ${forecastResponse.data.city!!.sunset}"
+
+                        val temp = todayList[0].main!!.temp!!.minus(272.15).toInt()
+
+                        binding.tvTempToday.text = "$temp °C"
+                        binding.imageViewHumidity.setImageResource(R.drawable.forecasticon)
+                        binding.imageViewWindSpeed.setImageResource(R.drawable.outline_wb_sunny_24)
+
+
                     }
+                    is Resource.Error->{
+                        Toast.makeText(requireContext(),forecastResponse.message.toString(),Toast.LENGTH_LONG).show()
+                    }
+                    is Resource.Loading->{
+                        Toast.makeText(requireContext(),"Fetching Data",Toast.LENGTH_LONG).show()
 
+                    }
                 }
             }
         }
+    }
 
-        return (binding.root)
+    private fun setUpWeatherRecyclerView(){
+
+        binding.rvWeather.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = weatherAdapter
+        }
     }
 }

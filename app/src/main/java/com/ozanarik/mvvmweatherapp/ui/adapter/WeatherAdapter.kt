@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ozanarik.mvvmweatherapp.Forecast
+import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.WeatherItemListBinding
 import java.time.LocalDate
@@ -36,7 +37,7 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
     }
 
-    private val differList = AsyncListDiffer(this,diffUtilCallBack)
+    val differList = AsyncListDiffer(this,diffUtilCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherHolder {
 
@@ -54,11 +55,13 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
         holder.apply {
 
-            val temp = currentWeather.main!!.temp!!.minus(272.15)
-            val timeToday = currentWeather.dtTxt!!.substring(11,16)
+            val temp = currentWeather.main!!.temp!!.minus(272.15).toInt()
+            val timeToday = "${currentWeather.dtTxt!!.substring(11,16)} / ${currentWeather.dtTxt!!.substring(0,11)}"
 
             binding.tvTemp.text = "$temp °C"
             binding.tvDate.text = timeToday
+
+            binding.imageViewIcon.setImageResource(R.drawable.outline_wb_sunny_24)
 
         }
     }

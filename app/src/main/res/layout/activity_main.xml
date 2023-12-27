@@ -10,9 +10,14 @@
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/weatherforecastbg"
+        android:alpha="0.75"
+        android:isScrollContainer="false"
         app:elevation="15dp"
-        app:itemIconTint="@color/design_default_color_secondary"
-        app:itemTextColor="@color/black"
+        app:itemIconSize="20dp"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/orange"
+        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mainactivitynav" />
+        app:navGraph="@navigation/mainactivitynav"
+        android:background="@drawable/bottomnavtransparentbg"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
