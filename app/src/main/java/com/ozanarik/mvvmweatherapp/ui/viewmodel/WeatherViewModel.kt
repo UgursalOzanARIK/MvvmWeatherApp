@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(val weatherForecastRepository: WeatherForecastRepository) :ViewModel() {
+class WeatherViewModel @Inject constructor(private val weatherForecastRepository: WeatherForecastRepository) :ViewModel() {
 
     private val _forecastResponse:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse

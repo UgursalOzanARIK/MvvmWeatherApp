@@ -10,8 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
@@ -39,10 +42,7 @@ class WeatherForecastFragment : Fragment() {
 
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
-        weatherAdapter = WeatherAdapter()
-
-
-
+        setUpWeatherRecyclerView()
 
         return (binding.root)
     }
@@ -51,11 +51,17 @@ class WeatherForecastFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpWeatherRecyclerView()
         getWeatherForecast("44.34","10.99")
-
+        sendCityName()
     }
 
+    private fun sendCityName(){
+        binding.tvNextFiveDays.setOnClickListener {
+
+            val navigation = WeatherForecastFragmentDirections.actionWeatherForecastFragmentToWeeklyWeatherFragment(binding.tvCityName.text.toString())
+            Navigation.findNavController(it).navigate(navigation)
+        }
+    }
 
 
     @SuppressLint("SetTextI18n")
@@ -114,6 +120,7 @@ class WeatherForecastFragment : Fragment() {
     private fun setUpWeatherRecyclerView(){
 
         binding.rvWeather.apply {
+            weatherAdapter = WeatherAdapter()
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = weatherAdapter

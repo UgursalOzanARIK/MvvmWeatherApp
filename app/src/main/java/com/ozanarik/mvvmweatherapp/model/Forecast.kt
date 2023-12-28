@@ -1,6 +1,7 @@
 package com.ozanarik.mvvmweatherapp
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class Forecast (
@@ -11,4 +12,4 @@ data class Forecast (
     @SerializedName("list"    ) var list    : ArrayList<WeatherList> = arrayListOf(),
     @SerializedName("city"    ) var city    : City?           = City()
 
-)
+):Serializable
