@@ -12,6 +12,7 @@ import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.WeatherItemListBinding
+import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -61,10 +62,41 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
             binding.tvTemp.text = "$temp °C"
             binding.tvDate.text = timeToday
 
-            binding.imageViewIcon.setImageResource(R.drawable.outline_wb_sunny_24)
+
+
+            currentWeather.weather[0].icon?.let { getWeatherIcon(it) }?.let { binding.imageViewIcon.setImageResource(it) }
+
 
         }
     }
+
+
+    private fun getWeatherIcon(weatherIconString: String):Int{
+
+
+        return when(weatherIconString){
+
+            WeatherIconHelperClass.CLEAR_SKY.weatherIconString->R.drawable.clearsky
+            WeatherIconHelperClass.FEW_CLOUDS.weatherIconString->R.drawable.fewclouds
+            WeatherIconHelperClass.SCATTERED_CLOUDS.weatherIconString->R.drawable.scatteredclouds
+            WeatherIconHelperClass.BROKEN_CLOUDS.weatherIconString->R.drawable.brokenclouds
+            WeatherIconHelperClass.SHOWER_RAIN.weatherIconString->R.drawable.rain
+            WeatherIconHelperClass.RAIN.weatherIconString->R.drawable.rain
+            WeatherIconHelperClass.THUNDERSTORM.weatherIconString->R.drawable.thunderstorm
+            WeatherIconHelperClass.SNOW.weatherIconString->R.drawable.snow
+            WeatherIconHelperClass.MIST.weatherIconString->R.drawable.mist
+            WeatherIconHelperClass.OVERCAST_CLOUDS.weatherIconString->R.drawable.scatteredclouds
+
+
+            else -> {R.drawable.clearsky}
+        }
+
+
+
+
+    }
+
+
     override fun getItemCount(): Int {
 
         return differList.currentList.size
