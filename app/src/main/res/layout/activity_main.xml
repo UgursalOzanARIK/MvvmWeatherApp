@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,8 +11,8 @@
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/weatherforecastbg"
         android:alpha="0.75"
+        android:background="@drawable/weeklyweatherforecastbg"
         android:isScrollContainer="false"
         app:elevation="15dp"
         app:itemIconSize="20dp"
@@ -28,11 +29,11 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@drawable/bottomnavbg"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mainactivitynav"
-        android:background="@drawable/bottomnavtransparentbg"/>
+        app:navGraph="@navigation/mainactivitynav" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

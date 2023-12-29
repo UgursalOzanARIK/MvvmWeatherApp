@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ozanarik.mvvmweatherapp.R
@@ -41,9 +42,18 @@ class WeeklyWeatherFragment : Fragment() {
         weatherAdapter = WeatherAdapter()
         setUpWeatherRv()
         getCityName()
+        navigateBackToWeatherForecastFragment()
 
 
         return binding.root
+    }
+
+    private fun navigateBackToWeatherForecastFragment(){
+
+        binding.imageViewBackButtonFromWeeklyWeather.setOnClickListener {
+            findNavController().navigate(R.id.action_weeklyWeatherFragment_to_weatherForecastFragment)
+        }
+
     }
 
     private fun getCityName(){
