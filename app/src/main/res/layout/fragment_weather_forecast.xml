@@ -171,7 +171,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.5"
             android:background="?attr/colorPrimary"
-            android:backgroundTint="@color/lavender"
+            android:backgroundTint="@color/purple700"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"

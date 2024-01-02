@@ -75,6 +75,7 @@ dependencies {
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation ("com.airbnb.android:lottie:6.2.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
 
 

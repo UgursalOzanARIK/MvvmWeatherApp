@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
+import com.ozanarik.mvvmweatherapp.utils.DataStoreManager
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +20,12 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherForecastRepository: WeatherForecastRepository) :ViewModel() {
+class WeatherViewModel @Inject constructor
+            (
+    private val weatherForecastRepository: WeatherForecastRepository,
+    private val dataStoreManager: DataStoreManager
+            )
+    :ViewModel() {
 
     private val _forecastResponse:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse
@@ -28,6 +34,12 @@ class WeatherViewModel @Inject constructor(private val weatherForecastRepository
     init {
         getWeatherForecastByLatitudeLongitude(lat = "51.507351", lon = "-0.127758")
     }
+
+
+    fun setDarkMode(isDarkMode:Boolean)=viewModelScope.launch {
+        dataStoreManager.setDarkMode(isDarkMode)
+    }
+    fun getDarkMode()=dataStoreManager.getDarkMode()
 
 
     fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String)= viewModelScope.launch {
@@ -79,6 +91,7 @@ class WeatherViewModel @Inject constructor(private val weatherForecastRepository
             WeatherIconHelperClass.MIST.weatherIconString-> R.drawable.mist
             WeatherIconHelperClass.OVERCAST_CLOUDS.weatherIconString-> R.drawable.scatteredclouds
             WeatherIconHelperClass.LIGHT_RAIN.weatherIconString-> R.drawable.rain
+            WeatherIconHelperClass.SCATTERED_CLOUDS_1.weatherIconString->R.drawable.scatteredclouds
 
             else -> {
                 R.drawable.clearsky}

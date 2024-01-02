@@ -1,11 +1,15 @@
 package com.ozanarik.mvvmweatherapp.dependencyinjection
 
+import android.content.Context
+import androidx.datastore.core.DataStore
 import com.ozanarik.mvvmweatherapp.business.remote.WeatherApi
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
 import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.BASE_URL
+import com.ozanarik.mvvmweatherapp.utils.DataStoreManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -54,4 +58,12 @@ class AppModule {
             .retryOnConnectionFailure(true)
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context:Context):DataStoreManager{
+        return DataStoreManager(context)
+    }
+
+
 }

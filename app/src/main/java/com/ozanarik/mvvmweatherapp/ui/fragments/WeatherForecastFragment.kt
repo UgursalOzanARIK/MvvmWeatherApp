@@ -1,6 +1,5 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,23 +7,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.os.bundleOf
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherTodayAdapter
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
 import com.ozanarik.mvvmweatherapp.utils.Resource
-import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import com.ozanarik.mvvmweatherapp.utils.capitalizeWords
 import com.ozanarik.mvvmweatherapp.utils.isSplittable
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
@@ -36,8 +30,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
 class WeatherForecastFragment : Fragment() {
     private lateinit var weatherViewModel: WeatherViewModel
@@ -46,41 +40,42 @@ class WeatherForecastFragment : Fragment() {
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
 
 
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
+        checkDarkMode()
 
 
+
+
+        return (binding.root)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setUpWeatherRecyclerView()
-
         getWeatherForecastToday("51.507351","-0.127758")
         getWeeklyForecast("51.507351","-0.127758")
 
-        return (binding.root)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeatherForecastToday(latitude:String, longitude:String){
 
         showTodayForecast(latitude,longitude)
-
-
-        //FOR 5 DAYS
-
-
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeeklyForecast(latitude: String, longitude: String){
-
         showWeeklyForecast(latitude,longitude)
-
     }
+
 
     private fun setUpWeatherRecyclerView(){
 
@@ -139,6 +134,23 @@ class WeatherForecastFragment : Fragment() {
         }
     }
 
+    private fun checkDarkMode(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            weatherViewModel.getDarkMode().collect{isDarkMode->
+                when(isDarkMode){
+                    true->{
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    false->{
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                }
+
+        }
+
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showTodayForecast(latitude: String, longitude: String){
 
@@ -174,6 +186,9 @@ class WeatherForecastFragment : Fragment() {
                            tvDescription.text = weatherDescriptionText
                            tvTempToday.text = todayList[0].main!!.temp!!.kelvinToCelsius().toString()
                            imageViewNowIcon.setImageResource(weatherViewModel.getWeatherIcon(todayList[0].weather[0].icon!!))
+
+                           Log.e("asd",todayList[0].weather[0].icon.toString())
+
                        }
 
                        binding.loadingLottieAnim.makeInvisible()
