@@ -26,7 +26,10 @@ import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import com.ozanarik.mvvmweatherapp.utils.capitalizeWords
+import com.ozanarik.mvvmweatherapp.utils.isSplittable
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
+import com.ozanarik.mvvmweatherapp.utils.makeInvisible
+import com.ozanarik.mvvmweatherapp.utils.makeVisible
 import com.ozanarik.mvvmweatherapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ class WeatherForecastFragment : Fragment() {
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,22 +59,14 @@ class WeatherForecastFragment : Fragment() {
 
         setUpWeatherRecyclerView()
 
+        getWeatherForecastToday("51.507351","-0.127758")
+        getWeeklyForecast("51.507351","-0.127758")
+
         return (binding.root)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        getWeatherForecastToday("51.507351","-0.127758")
-        getWeeklyForecast("51.507351","-0.127758")
-
-    }
-
-
-    @SuppressLint("SetTextI18n")
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getWeatherForecastToday(latitude:String,longitude:String){
+    private fun getWeatherForecastToday(latitude:String, longitude:String){
 
         showTodayForecast(latitude,longitude)
 
@@ -117,18 +113,23 @@ class WeatherForecastFragment : Fragment() {
                         val forecastList = forecastResponse.data!!.list
                         val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
+
                         forecastList.forEach { weatherList->
 
-                            if(!weatherList.dtTxt!!.split("\\s".toRegex()).contains(todayDate)){
+                            if(!weatherList.dtTxt!!.isSplittable(todayDate)){
 
                                 fiveDaysWeatherList.add(weatherList)
                             }
                         }
 
                         fiveDaysWeatherList.let { weatherAdapter.differList.submitList(it) }
+                        binding.loadingLottieAnim.makeInvisible()
+
                     }
                     is Resource.Loading->{
                         //anim
+                        binding.loadingLottieAnim.makeVisible()
+                        binding.loadingLottieAnim.playAnimation()
                     }
                     is Resource.Error->{
                         toast(forecastResponse.message!!)
@@ -141,7 +142,6 @@ class WeatherForecastFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showTodayForecast(latitude: String, longitude: String){
 
-
         weatherViewModel.getWeatherForecastByLatitudeLongitude(latitude,longitude)
         viewLifecycleOwner.lifecycleScope.launch {
             weatherViewModel.forecastResponse.collect{forecastResponse->
@@ -151,39 +151,43 @@ class WeatherForecastFragment : Fragment() {
                    is Resource.Success->{
 
                        val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                       val tomorrowDate = LocalDate.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
 
                        val todayList = mutableListOf<WeatherList>()
                        val forecastList = forecastResponse.data!!.list
 
                        forecastList.forEach { weatherList->
 
-                           if (weatherList.dtTxt!!.split("\\s".toRegex()).contains(todayDate)){
+                           if (weatherList.dtTxt!!.isSplittable(todayDate) || weatherList.dtTxt!!.isSplittable(tomorrowDate)){
 
                                todayList.add(weatherList)
                            }
                        }
                        todayList.let { weatherTodayAdapter.differList.submitList(it) }
 
-
                        binding.apply {
 
                            tvCityName.text = forecastResponse.data.city!!.name
-                           val weatherDesciptionText = todayList[0].weather[0].description.capitalizeWords()
+                           val weatherDescriptionText = todayList[0].weather[0].description.capitalizeWords()
 
-                           tvDescription.text = weatherDesciptionText
+                           tvDescription.text = weatherDescriptionText
                            tvTempToday.text = todayList[0].main!!.temp!!.kelvinToCelsius().toString()
                            imageViewNowIcon.setImageResource(weatherViewModel.getWeatherIcon(todayList[0].weather[0].icon!!))
                        }
+
+                       binding.loadingLottieAnim.makeInvisible()
                    }
                    is Resource.Error->{
                        toast(forecastResponse.message!!)
                    }
                    is Resource.Loading->{
                        //anim
+                       binding.loadingLottieAnim.makeVisible()
+                       binding.loadingLottieAnim.playAnimation()
                    }
                }
             }
         }
     }
-
 }

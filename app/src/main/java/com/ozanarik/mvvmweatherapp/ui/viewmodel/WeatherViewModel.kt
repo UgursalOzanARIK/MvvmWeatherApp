@@ -4,14 +4,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
-import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,24 +25,44 @@ class WeatherViewModel @Inject constructor(private val weatherForecastRepository
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse
 
 
+    init {
+        getWeatherForecastByLatitudeLongitude(lat = "51.507351", lon = "-0.127758")
+    }
+
+
     fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String)= viewModelScope.launch {
 
-        weatherForecastRepository.getWeatherForecastByLatitudeLongitude(lat,lon).collect{forecast->
-            when(forecast){
-                is Resource.Success->{
+        try {
+            val weatherForecastResponse = withContext(Dispatchers.IO){
+                weatherForecastRepository.getWeatherForecastByLatitudeLongitude(lat, lon)
+            }
 
-                    forecast.data?.let { _forecastResponse.value = Resource.Success(it) }
+            withContext(Dispatchers.Main){
+
+                weatherForecastResponse.collect{forecast->
+
+                    when(forecast){
+
+                        is Resource.Success->   _forecastResponse.value         =       Resource.Success(forecast.data!!)
+                        is Resource.Error->     _forecastResponse.value         =       Resource.Error(forecast.message!!)
+                        is Resource.Loading->   _forecastResponse.value         =       Resource.Loading()
+                    }
+
                 }
-                is Resource.Loading->{
-                    _forecastResponse.value = Resource.Loading()
-                }
-                is Resource.Error->{
-                    _forecastResponse.value = Resource.Error(forecast.message.toString())
-                }
+            }
+
+        }catch (e:Exception){
+
+            withContext(Dispatchers.Main){
+                _forecastResponse.value = Resource.Error(e.message?:e.localizedMessage)
+            }
+
+        }catch (e:IOException){
+            withContext(Dispatchers.IO){
+                _forecastResponse.value = Resource.Error(e.message?:e.localizedMessage)
             }
         }
     }
-
 
     fun getWeatherIcon(weatherIconString: String):Int{
 

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 
-class WeatherForecastRepository @Inject constructor(val weatherApi: WeatherApi) {
+class WeatherForecastRepository @Inject constructor(private val weatherApi: WeatherApi) {
 
     suspend fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String):Flow<Resource<Forecast>> = flow {
 

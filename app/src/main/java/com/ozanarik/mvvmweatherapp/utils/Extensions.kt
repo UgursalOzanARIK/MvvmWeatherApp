@@ -1,13 +1,10 @@
 package com.ozanarik.mvvmweatherapp.utils
 
 import android.content.Context
-import android.os.Build
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.airbnb.lottie.Lottie
 
 
 fun Context.toast(message:String, length: Int = Toast.LENGTH_LONG){
@@ -17,6 +14,10 @@ fun Context.toast(message:String, length: Int = Toast.LENGTH_LONG){
 
 fun Fragment.toast(message:String,length: Int = Toast.LENGTH_LONG){
     requireContext().toast(message,length)
+}
+
+fun String.isSplittable(dataToCompare:String):Boolean{
+    return this.split("\\s".toRegex()).contains(dataToCompare)
 }
 
 

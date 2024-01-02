@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.fragments.SettingsFragment"
-    android:background="@drawable/settingsfragmentbg">
+    android:background="@color/lavender"
+    android:alpha="0.8">
 
     <Switch
         android:id="@+id/themeSwitch"

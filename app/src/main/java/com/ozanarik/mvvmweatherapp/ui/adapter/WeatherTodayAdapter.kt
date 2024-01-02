@@ -10,6 +10,7 @@ import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.WeatherTodayItemListBinding
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
+import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 
 class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayHolder>() {
 
@@ -44,11 +45,13 @@ class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayH
         holder.binding.apply {
 
             val timeToday = currentWeather.dtTxt!!.substring(11,16)
-            val temp = currentWeather.main!!.temp!!.minus(272.15).toInt()
+            val temp = currentWeather.main!!.temp!!.kelvinToCelsius()
+
 
 
             tvNow.text = timeToday
             tvTempNow.text = "$temp °C"
+            tvDateToday.text = currentWeather.dtTxt!!.substring(0,11)
 
             imageViewToday.setImageResource(getWeatherIcon(currentWeather.weather[0].icon!!))
 
