@@ -40,7 +40,7 @@ class WeeklyWeatherFragment : Fragment() {
         binding = FragmentWeeklyWeatherBinding.inflate(inflater,container,false)
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         weatherAdapter = WeatherAdapter()
-        setUpWeatherRv()
+     //   setUpWeatherRv()
         getCityName()
         navigateBackToWeatherForecastFragment()
 
@@ -106,7 +106,7 @@ class WeeklyWeatherFragment : Fragment() {
     }
 
 
-    private fun setUpWeatherRv(){
+ /*   private fun setUpWeatherRv(){
 
         binding.weatherRv.apply {
 
@@ -117,6 +117,6 @@ class WeeklyWeatherFragment : Fragment() {
         }
 
 
-    }
+    }*/
 
 }

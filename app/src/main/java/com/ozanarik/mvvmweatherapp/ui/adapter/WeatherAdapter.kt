@@ -65,11 +65,8 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
 
             currentWeather.weather[0].icon?.let { getWeatherIcon(it) }?.let { binding.imageViewIcon.setImageResource(it) }
-
-
         }
     }
-
 
     private fun getWeatherIcon(weatherIconString: String):Int{
 
@@ -86,7 +83,7 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
             WeatherIconHelperClass.SNOW.weatherIconString->R.drawable.snow
             WeatherIconHelperClass.MIST.weatherIconString->R.drawable.mist
             WeatherIconHelperClass.OVERCAST_CLOUDS.weatherIconString->R.drawable.scatteredclouds
-
+            WeatherIconHelperClass.LIGHT_RAIN.weatherIconString->R.drawable.rain
 
             else -> {R.drawable.clearsky}
         }

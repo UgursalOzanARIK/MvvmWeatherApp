@@ -11,7 +11,8 @@ enum class WeatherIconHelperClass(val weatherIconString: String) {
     THUNDERSTORM("11d"),
     SNOW("13d"),
     MIST("50d"),
-    OVERCAST_CLOUDS("04N")
+    OVERCAST_CLOUDS("04n"),
+    LIGHT_RAIN("10n")
 
 
 
