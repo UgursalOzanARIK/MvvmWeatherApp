@@ -5,14 +5,22 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
@@ -33,15 +41,11 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class WeatherForecastFragment : Fragment() {
+class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var binding: FragmentWeatherForecastBinding
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
-
-
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +55,25 @@ class WeatherForecastFragment : Fragment() {
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
         checkDarkMode()
+
+        binding.toolbar.title = "Forecast"
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.search_menu,menu)
+                val searchItem = menu.findItem(R.id.action_Search)
+                val searchView = searchItem.actionView as SearchView
+                searchView.setOnQueryTextListener(this@WeatherForecastFragment)
+
+
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+
+                return false
+            }
+        },viewLifecycleOwner,Lifecycle.State.RESUMED)
 
 
 
@@ -184,8 +207,11 @@ class WeatherForecastFragment : Fragment() {
                            val weatherDescriptionText = todayList[0].weather[0].description.capitalizeWords()
 
                            tvDescription.text = weatherDescriptionText
-                           tvTempToday.text = todayList[0].main!!.temp!!.kelvinToCelsius().toString()
-                           imageViewNowIcon.setImageResource(weatherViewModel.getWeatherIcon(todayList[0].weather[0].icon!!))
+                           tvTempToday.text = "${todayList[0].main!!.temp!!.kelvinToCelsius()} °C"
+                           imageViewWind.setImageResource(R.drawable.wind)
+                           tvWind.text = todayList[0].wind!!.speed.toString()
+                           imageViewHumidity.setImageResource(R.drawable.humidity)
+                           tvHumidity.text = todayList[0].main!!.humidity.toString()
 
                            Log.e("asd",todayList[0].weather[0].icon.toString())
 
@@ -204,5 +230,17 @@ class WeatherForecastFragment : Fragment() {
                }
             }
         }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+
+        Log.e("asd","hahah")
+
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+
+        return false
     }
 }
