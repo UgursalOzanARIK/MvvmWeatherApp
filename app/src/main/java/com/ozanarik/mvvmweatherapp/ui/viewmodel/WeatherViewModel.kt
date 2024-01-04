@@ -1,5 +1,13 @@
 package com.ozanarik.mvvmweatherapp.ui.viewmodel
 
+import android.Manifest
+import android.app.Activity
+import android.app.Application
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ozanarik.mvvmweatherapp.Forecast
@@ -9,11 +17,11 @@ import com.ozanarik.mvvmweatherapp.utils.DataStoreManager
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -22,14 +30,20 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor
             (
+    application:Application,
     private val weatherForecastRepository: WeatherForecastRepository,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
             )
-    :ViewModel() {
+    :AndroidViewModel(application = application) {
 
     private val _forecastResponse:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse
 
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
 
     init {
         getWeatherForecastByLatitudeLongitude(lat = "51.507351", lon = "-0.127758")
@@ -76,6 +90,7 @@ class WeatherViewModel @Inject constructor
         }
     }
 
+
     fun getWeatherIcon(weatherIconString: String):Int{
 
         return when(weatherIconString){
@@ -96,6 +111,6 @@ class WeatherViewModel @Inject constructor
             else -> {
                 R.drawable.clearsky}
         }
-
 }
+
 }

@@ -77,22 +77,23 @@
                     android:id="@+id/tvTempToday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
+                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewThermo"
                     app:layout_constraintTop_toBottomOf="@+id/tvCityName" />
 
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="32dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
                     android:textColor="@color/white"
@@ -121,7 +122,8 @@
                     android:layout_height="125dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#5050D1"
+                    android:alpha="1"
+                    android:backgroundTint="#005050D1"
                     app:cardCornerRadius="15dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDescription">
@@ -182,7 +184,7 @@
                     android:layout_height="125dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:backgroundTint="#4196E1"
+                    android:backgroundTint="#004196E1"
                     app:cardCornerRadius="15dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvDescription">
@@ -237,6 +239,36 @@
 
                 </androidx.cardview.widget.CardView>
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewNowIcon"
+                    android:layout_width="95dp"
+                    android:layout_height="125dp"
+                    android:backgroundTint="#00424242"
+                    app:layout_constraintEnd_toStartOf="@+id/cardViewWind"
+                    app:layout_constraintStart_toEndOf="@+id/cardViewHumidity"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+
+                    <ImageView
+                        android:id="@+id/imageViewNowIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        tools:src="@tools:sample/avatars" />
+                </androidx.cardview.widget.CardView>
+
+                <ImageView
+                    android:id="@+id/imageViewThermo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/thermometer"
+                    app:layout_constraintEnd_toStartOf="@+id/tvTempToday"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvCityName" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -288,7 +320,46 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:titleTextColor="@color/white"/>
+            app:titleTextColor="@color/white">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewGetLocation"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:cardCornerRadius="100dp"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:lottie_autoPlay="true"
+                            app:lottie_loop="true"
+                            app:lottie_rawRes="@raw/locationanimation" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.Toolbar>
 
         <TextView
             android:id="@+id/textView"

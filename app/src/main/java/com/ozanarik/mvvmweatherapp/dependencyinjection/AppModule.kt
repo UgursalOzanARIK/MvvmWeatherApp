@@ -1,7 +1,6 @@
 package com.ozanarik.mvvmweatherapp.dependencyinjection
 
 import android.content.Context
-import androidx.datastore.core.DataStore
 import com.ozanarik.mvvmweatherapp.business.remote.WeatherApi
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
 import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.BASE_URL
@@ -46,6 +45,7 @@ class AppModule {
             .client(okHttpClient)
             .build()
     }
+
     @Provides
     @Singleton
     fun provideOkHttpClient():OkHttpClient{

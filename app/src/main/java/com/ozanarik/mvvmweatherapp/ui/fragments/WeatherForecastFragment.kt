@@ -1,5 +1,9 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,16 +14,22 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
@@ -32,6 +42,7 @@ import com.ozanarik.mvvmweatherapp.utils.isSplittable
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 import com.ozanarik.mvvmweatherapp.utils.makeInvisible
 import com.ozanarik.mvvmweatherapp.utils.makeVisible
+import com.ozanarik.mvvmweatherapp.utils.showSnackbar
 import com.ozanarik.mvvmweatherapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -46,6 +57,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     private lateinit var binding: FragmentWeatherForecastBinding
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,9 +66,11 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         // Inflate the layout for this fragment
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
         checkDarkMode()
 
         binding.toolbar.title = "Forecast"
+
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         requireActivity().addMenuProvider(object : MenuProvider {
@@ -65,8 +79,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
                 val searchItem = menu.findItem(R.id.action_Search)
                 val searchView = searchItem.actionView as SearchView
                 searchView.setOnQueryTextListener(this@WeatherForecastFragment)
-
-
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -76,6 +88,9 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         },viewLifecycleOwner,Lifecycle.State.RESUMED)
 
 
+        binding.cardViewGetLocation.setOnClickListener {
+            getWeatherForLocation()
+        }
 
 
         return (binding.root)
@@ -97,6 +112,58 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeeklyForecast(latitude: String, longitude: String){
         showWeeklyForecast(latitude,longitude)
+    }
+
+    private fun checkPermissions(callback:(Double,Double)->Unit) {
+
+        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED&&
+            ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+
+                showSnackbar(
+                    "Permission required to access location",
+                    "Grant Permission")
+                    {requirePermission()}
+            }else{
+
+                requirePermission()
+
+            }
+
+        }else{
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location:Location?->
+
+                location?.let {
+
+                    val longitude = it.longitude
+                    val latitude = it.latitude
+
+                    callback(latitude,longitude)
+                }?:run {
+                    toast("Error fetching the location, please try again...")
+                }
+            }
+
+        }
+    }
+    
+    private fun getWeatherForLocation(){
+        checkPermissions { latitude, longitude ->
+
+            getWeeklyForecast(latitude.toString(),longitude.toString())
+            getWeatherForecastToday(latitude.toString(),longitude.toString())
+        }
+    }
+
+
+    private fun requirePermission(){
+        ActivityCompat.requestPermissions(requireActivity(),
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+            , 101)
+
     }
 
 
@@ -156,24 +223,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
             }
         }
     }
-
-    private fun checkDarkMode(){
-        viewLifecycleOwner.lifecycleScope.launch {
-            weatherViewModel.getDarkMode().collect{isDarkMode->
-                when(isDarkMode){
-                    true->{
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    }
-                    false->{
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    }
-                }
-
-        }
-
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showTodayForecast(latitude: String, longitude: String){
 
@@ -207,11 +256,14 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
                            val weatherDescriptionText = todayList[0].weather[0].description.capitalizeWords()
 
                            tvDescription.text = weatherDescriptionText
-                           tvTempToday.text = "${todayList[0].main!!.temp!!.kelvinToCelsius()} °C"
+                           tvTempToday.text = "${todayList[0].main!!.temp!!.kelvinToCelsius()}"
                            imageViewWind.setImageResource(R.drawable.wind)
+                           imageViewWind.setColorFilter(Color.WHITE)
                            tvWind.text = todayList[0].wind!!.speed.toString()
                            imageViewHumidity.setImageResource(R.drawable.humidity)
                            tvHumidity.text = todayList[0].main!!.humidity.toString()
+                           imageViewNowIcon.setImageResource(weatherViewModel.getWeatherIcon(todayList[0].weather[0].icon!!))
+                           imageViewThermo.setColorFilter(Color.WHITE)
 
                            Log.e("asd",todayList[0].weather[0].icon.toString())
 
@@ -228,6 +280,21 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
                        binding.loadingLottieAnim.playAnimation()
                    }
                }
+            }
+        }
+    }
+
+    private fun checkDarkMode(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            weatherViewModel.getDarkMode().collect{isDarkMode->
+                when(isDarkMode){
+                    true->{
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    false->{
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                }
             }
         }
     }

@@ -51,8 +51,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-
-
+    
     //RETROFIT
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -73,9 +72,18 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
 
+    //LOGGING INTERCEPTOR
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    //LOTTIE ANIMATION
     implementation ("com.airbnb.android:lottie:6.2.0")
+
+    //DATASTORE
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //LOCATION
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 
 
 
