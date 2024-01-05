@@ -36,6 +36,7 @@ import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherTodayAdapter
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
+import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.capitalizeWords
 import com.ozanarik.mvvmweatherapp.utils.isSplittable
@@ -45,6 +46,8 @@ import com.ozanarik.mvvmweatherapp.utils.makeVisible
 import com.ozanarik.mvvmweatherapp.utils.showSnackbar
 import com.ozanarik.mvvmweatherapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -64,14 +67,18 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        checkDarkMode()
+        initiateVariables()
 
-        binding.toolbar.title = "Forecast"
 
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        return (binding.root)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpWeatherRecyclerView()
+        weatherViewModel.getLocationLatitudeLongitudeKeys()
+
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -88,21 +95,31 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         },viewLifecycleOwner,Lifecycle.State.RESUMED)
 
 
+
+        checkDarkMode()
+        setupToolbar()
         binding.cardViewGetLocation.setOnClickListener {
+
             getWeatherForLocation()
+            toast("Fetching Location Data...")
+
         }
 
 
-        return (binding.root)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpWeatherRecyclerView()
-        getWeatherForecastToday("51.507351","-0.127758")
-        getWeeklyForecast("51.507351","-0.127758")
+    private fun initiateVariables(){
+        weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
     }
+
+    private fun setupToolbar(){
+        binding.toolbar.title = "Forecast"
+
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getWeatherForecastToday(latitude:String, longitude:String){
@@ -140,6 +157,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
                     val latitude = it.latitude
 
                     callback(latitude,longitude)
+                    weatherViewModel.setLocationLatitudeLongitudeKeys(latitude,longitude)
                 }?:run {
                     toast("Error fetching the location, please try again...")
                 }
@@ -161,11 +179,9 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         ActivityCompat.requestPermissions(requireActivity(),
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION)
-            , 101)
-
+                Manifest.permission.ACCESS_COARSE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE)
     }
-
 
     private fun setUpWeatherRecyclerView(){
 
@@ -265,7 +281,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
                            imageViewNowIcon.setImageResource(weatherViewModel.getWeatherIcon(todayList[0].weather[0].icon!!))
                            imageViewThermo.setColorFilter(Color.WHITE)
 
-                           Log.e("asd",todayList[0].weather[0].icon.toString())
 
                        }
 
@@ -283,6 +298,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
             }
         }
     }
+
 
     private fun checkDarkMode(){
         viewLifecycleOwner.lifecycleScope.launch {

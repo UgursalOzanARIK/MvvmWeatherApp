@@ -28,6 +28,12 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideContext(@ApplicationContext context:Context):Context{
+        return context
+    }
+
+    @Provides
+    @Singleton
     fun provideBaseUrl()=BASE_URL
 
     @Provides

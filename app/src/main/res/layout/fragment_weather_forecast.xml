@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:alpha="1"
-    android:background="@color/white"
+    android:background="@drawable/weeklyweatherforecastbg"
     tools:context=".ui.fragments.WeatherForecastFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,14 +43,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="1"
-                android:background="@color/black">
+                android:background="@drawable/weathertodaycardviewbg">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvToday"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -93,7 +92,7 @@
                     android:id="@+id/tvDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
                     android:textColor="@color/white"
@@ -108,158 +107,21 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="4dp"
                     android:alpha="0.5"
                     android:background="@color/white"
+                    app:layout_constraintBottom_toTopOf="@+id/rvToday"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardViewHumidity" />
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewHumidity"
-                    android:layout_width="95dp"
-                    android:layout_height="125dp"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="16dp"
-                    android:alpha="1"
-                    android:backgroundTint="#005050D1"
-                    app:cardCornerRadius="15dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDescription">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageViewHumidity"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_marginTop="4dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/humidity"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvHumidity"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="@font/raleway_semibold"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-                        <TextView
-                            android:id="@+id/textView7"
-                            android:layout_width="95dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="@font/raleway_semibold"
-                            android:text="Humidity"
-                            android:textAlignment="center"
-                            android:textAllCaps="false"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold|italic"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/imageViewHumidity" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewWind"
-                    android:layout_width="95dp"
-                    android:layout_height="125dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:backgroundTint="#004196E1"
-                    app:cardCornerRadius="15dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDescription">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/imageViewWind"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:layout_marginTop="8dp"
-                            android:scaleType="centerCrop"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:src="@drawable/wind" />
-
-                        <TextView
-                            android:id="@+id/tvWind"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:fontFamily="@font/raleway_semibold"
-                            android:text="TextView"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.481"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/imageViewWind" />
-
-                        <TextView
-                            android:id="@+id/textView8"
-                            android:layout_width="95dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="@font/raleway_semibold"
-                            android:text="Wind Speed"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            android:textStyle="bold|italic"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/imageViewWind" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewNowIcon"
-                    android:layout_width="95dp"
-                    android:layout_height="125dp"
-                    android:backgroundTint="#00424242"
-                    app:layout_constraintEnd_toStartOf="@+id/cardViewWind"
-                    app:layout_constraintStart_toEndOf="@+id/cardViewHumidity"
-                    app:layout_constraintTop_toBottomOf="@+id/tvDescription">
-
-                    <ImageView
-                        android:id="@+id/imageViewNowIcon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        tools:src="@tools:sample/avatars" />
-                </androidx.cardview.widget.CardView>
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewNowIcon" />
 
                 <ImageView
                     android:id="@+id/imageViewThermo"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
                     android:src="@drawable/thermometer"
@@ -268,6 +130,105 @@
                     app:layout_constraintHorizontal_chainStyle="packed"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvCityName" />
+
+                <ImageView
+                    android:id="@+id/imageViewHumidity"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="64dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/humidity"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTempToday" />
+
+                <TextView
+                    android:id="@+id/tvHumidity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="68dp"
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/view2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="95dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="Humidity"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewHumidity" />
+
+                <ImageView
+                    android:id="@+id/imageViewWind"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="64dp"
+                    android:layout_marginEnd="32dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
+                    tools:src="@drawable/wind" />
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="95dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="Wind Speed"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold|italic"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewWind" />
+
+                <TextView
+                    android:id="@+id/tvWind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="68dp"
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/view2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+                <ImageView
+                    android:id="@+id/imageViewNowIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="32dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toTopOf="@+id/view2"
+                    app:layout_constraintEnd_toStartOf="@+id/textView8"
+                    app:layout_constraintStart_toEndOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+                    tools:src="@tools:sample/avatars" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
@@ -290,7 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="1"
-                android:background="@color/black">
+                android:background="@drawable/weathertodaycardviewbg">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeather"
@@ -313,14 +274,14 @@
             android:layout_height="wrap_content"
             android:alpha="1"
             android:background="?attr/colorPrimary"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="#7011072B"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:titleTextColor="@color/white">
+            app:titleTextColor="@color/orange">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -329,8 +290,8 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewGetLocation"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     app:cardCornerRadius="100dp"
                     android:layout_marginEnd="16dp"
                     android:backgroundTint="@color/white"
