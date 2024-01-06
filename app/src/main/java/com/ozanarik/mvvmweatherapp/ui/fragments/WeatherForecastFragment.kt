@@ -1,11 +1,15 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
@@ -80,6 +85,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         weatherViewModel.getLocationLatitudeLongitudeKeys()
 
 
+
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.search_menu,menu)
@@ -100,13 +106,61 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         setupToolbar()
         binding.cardViewGetLocation.setOnClickListener {
 
-            getWeatherForLocation()
-            toast("Fetching Location Data...")
+            if (isLocationEnabled(requireContext())){
+                getWeatherForLocation()
+                toast("Fetching Location Data...")
+            }else{
+                askTheUserToEnableLocation()
+            }
+        }
+
+
+
+
+
+
+    }
+
+    private fun isLocationEnabled(context:Context):Boolean{
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    private fun askTheUserToEnableLocation(){
+
+        when(isLocationEnabled(requireContext())){
+
+            true->{
+                getWeatherForLocation()
+            }
+            false->{
+                showEnableLocationServiceDialog()
+            }
 
         }
 
 
     }
+    private fun showEnableLocationServiceDialog(){
+
+        val alertDialogBuilder = AlertDialog.Builder(requireContext()).apply {
+
+            setTitle("Location services not enabled")
+            setMessage("You need to enable location services to use this application")
+            setPositiveButton("To the settings"){dialog,i->
+
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                requireContext().startActivity(intent)
+            }
+            setNegativeButton("Cancel"){dialog,i->
+
+                dialog.dismiss()
+            }
+            setCancelable(false)
+            create().show()
+        }
+    }
+
 
     private fun initiateVariables(){
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]

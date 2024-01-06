@@ -9,11 +9,23 @@
         android:id="@+id/weatherForecastFragment"
         android:name="com.ozanarik.mvvmweatherapp.ui.fragments.WeatherForecastFragment"
         android:label="fragment_weather_forecast"
-        tools:layout="@layout/fragment_weather_forecast" >
+        tools:layout="@layout/fragment_weather_forecast">
+
+
         <action
-            android:id="@+id/action_weatherForecastFragment_to_weeklyWeatherFragment"
-            app:destination="@id/weeklyWeatherFragment" />
+            android:id="@+id/firstTimeAppOpeningToWeatherForecastFragment"
+            app:destination="@+id/weatherForecastFragment"
+            >
+
+
+        </action>
+
+
+
     </fragment>
+
+
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.ozanarik.mvvmweatherapp.ui.fragments.SettingsFragment"
@@ -23,16 +35,9 @@
             android:id="@+id/action_settingsFragment_to_weatherForecastFragment"
             app:destination="@id/weatherForecastFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/weeklyWeatherFragment"
-        android:name="com.ozanarik.mvvmweatherapp.ui.fragments.WeeklyWeatherFragment"
-        android:label="fragment_weekly_weather"
-        tools:layout="@layout/fragment_weekly_weather" >
-        <argument
-            android:name="cityName"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_weeklyWeatherFragment_to_weatherForecastFragment"
-            app:destination="@id/weatherForecastFragment" />
-    </fragment>
+    <activity
+        android:id="@+id/firstTimeAppOpening"
+        android:name="com.ozanarik.mvvmweatherapp.ui.mainactivity.FirstTimeAppOpening"
+        android:label="activity_first_time_app_opening"
+        tools:layout="@layout/activity_first_time_app_opening" />
 </navigation>
