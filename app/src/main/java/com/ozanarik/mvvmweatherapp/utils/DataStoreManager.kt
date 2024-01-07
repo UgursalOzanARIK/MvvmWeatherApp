@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.IOException
@@ -39,7 +40,7 @@ class DataStoreManager(context:Context) {
         }
     }
 
-    suspend fun getLocationLatitudeLongitudeKeys(): Pair<Double,Double>{
+     suspend fun getLocationLatitudeLongitudeKeys(): Pair<Double,Double>{
 
 
         val prefs = dataStore.data.first()
@@ -49,6 +50,9 @@ class DataStoreManager(context:Context) {
         Log.e("asd","${longitude.toString()} from datastore")
 
         return Pair(latitude,longitude)
+
+
+
 
     }
 

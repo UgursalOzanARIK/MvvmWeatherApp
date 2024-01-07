@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
@@ -27,11 +28,10 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor
             (
-    application:Application,
     private val weatherForecastRepository: WeatherForecastRepository,
     private val dataStoreManager: DataStoreManager,
             )
-    :AndroidViewModel(application = application) {
+    :ViewModel() {
 
     private val _forecastResponse:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse

@@ -1,6 +1,7 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -30,6 +31,7 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -40,6 +42,7 @@ import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherTodayAdapter
+import com.ozanarik.mvvmweatherapp.ui.viewmodel.LocationViewModel
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
 import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.ozanarik.mvvmweatherapp.utils.Resource
@@ -65,6 +68,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     private lateinit var binding: FragmentWeatherForecastBinding
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
+    private lateinit var locationViewModel: LocationViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -82,7 +86,8 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpWeatherRecyclerView()
-        weatherViewModel.getLocationLatitudeLongitudeKeys()
+
+        getForecastForLocation()
 
 
 
@@ -101,46 +106,96 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         },viewLifecycleOwner,Lifecycle.State.RESUMED)
 
 
-
         checkDarkMode()
         setupToolbar()
         binding.cardViewGetLocation.setOnClickListener {
-
-            if (isLocationEnabled(requireContext())){
-                getWeatherForLocation()
-                toast("Fetching Location Data...")
-            }else{
-                askTheUserToEnableLocation()
-            }
+            checkLocationServicesEnabled()
         }
 
 
 
-
-
-
     }
 
-    private fun isLocationEnabled(context:Context):Boolean{
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+    private fun getForecastForLocation(){
+        val lat = checkPermissions().first
+        val lon = checkPermissions().second
+
+        getWeeklyForecast(lat.toString(),lon.toString())
+        getWeatherForecastToday(lat.toString(),lon.toString())
     }
 
-    private fun askTheUserToEnableLocation(){
 
-        when(isLocationEnabled(requireContext())){
+    private fun checkLocationServicesEnabled(){
 
-            true->{
-                getWeatherForLocation()
+        locationViewModel.areLocationServicesEnabled()
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationViewModel.locationServicesPermission.collect{locationServicesPerm->
+
+                when(locationServicesPerm){
+                    true->{
+                        checkPermissions()
+
+                    }
+                    false->{
+                        showEnableLocationServiceDialog()
+                    }
+                }
             }
-            false->{
-                showEnableLocationServiceDialog()
-            }
-
         }
-
-
     }
+
+    private fun checkPermissions():Pair<Double,Double>{
+        var latitude = 0.0
+        var longitude = 0.0
+        locationViewModel.isLocationPermissionGranted()
+        viewLifecycleOwner.lifecycleScope.launch {
+            locationViewModel.isGrantedLocationPermission.collect{locationPerm->
+                when(locationPerm){
+                    true->{
+
+                        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED&&
+                            ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+
+                            //
+
+                        }else{
+                            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location:Location?->
+
+                                if (location!=null){
+                                    latitude = location.latitude
+                                    longitude =location.longitude
+
+                                    weatherViewModel.setLocationLatitudeLongitudeKeys(latitude = latitude , longitude = longitude )
+                                    getWeatherForecastToday(latitude.toString(), longitude.toString())
+                                    getWeeklyForecast(latitude.toString(), longitude.toString())
+
+                                }
+                            }
+                        }
+                    }
+                    false->{
+
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),Manifest.permission.ACCESS_FINE_LOCATION)){
+                            showSnackbar("Permission required to access location","Grant Permission")
+                            {requirePermission()}
+                        }else {
+                            requirePermission()
+                        }
+                    }
+                }
+            }
+        }
+        return Pair(latitude,longitude)
+    }
+
+    private fun requirePermission(){
+        ActivityCompat.requestPermissions(requireActivity(), arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE)
+    }
+
     private fun showEnableLocationServiceDialog(){
 
         val alertDialogBuilder = AlertDialog.Builder(requireContext()).apply {
@@ -149,8 +204,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
             setMessage("You need to enable location services to use this application")
             setPositiveButton("To the settings"){dialog,i->
 
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                requireContext().startActivity(intent)
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
             setNegativeButton("Cancel"){dialog,i->
 
@@ -165,6 +219,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
     private fun initiateVariables(){
         weatherViewModel = ViewModelProvider(this)[WeatherViewModel::class.java]
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        locationViewModel=ViewModelProvider(this)[LocationViewModel::class.java]
 
     }
 
@@ -185,74 +240,8 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
         showWeeklyForecast(latitude,longitude)
     }
 
-    private fun checkPermissions(callback:(Double,Double)->Unit) {
 
-        if (ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED&&
-            ContextCompat.checkSelfPermission(requireContext(),Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-
-            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
-
-                showSnackbar(
-                    "Permission required to access location",
-                    "Grant Permission")
-                    {requirePermission()}
-            }else{
-
-                requirePermission()
-
-            }
-
-        }else{
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location:Location?->
-
-                location?.let {
-
-                    val longitude = it.longitude
-                    val latitude = it.latitude
-
-                    callback(latitude,longitude)
-                    weatherViewModel.setLocationLatitudeLongitudeKeys(latitude,longitude)
-                }?:run {
-                    toast("Error fetching the location, please try again...")
-                }
-            }
-
-        }
-    }
     
-    private fun getWeatherForLocation(){
-        checkPermissions { latitude, longitude ->
-
-            getWeeklyForecast(latitude.toString(),longitude.toString())
-            getWeatherForecastToday(latitude.toString(),longitude.toString())
-        }
-    }
-
-
-    private fun requirePermission(){
-        ActivityCompat.requestPermissions(requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)
-    }
-
-    private fun setUpWeatherRecyclerView(){
-
-        binding.rvWeather.apply {
-            weatherAdapter = WeatherAdapter()
-            layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            adapter = weatherAdapter
-        }
-
-        binding.rvToday.apply {
-            weatherTodayAdapter = WeatherTodayAdapter()
-            layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
-            setHasFixedSize(true)
-            adapter = weatherTodayAdapter
-        }
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun showWeeklyForecast(latitude: String, longitude: String){
@@ -368,6 +357,24 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener {
             }
         }
     }
+
+    private fun setUpWeatherRecyclerView(){
+
+        binding.rvWeather.apply {
+            weatherAdapter = WeatherAdapter()
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = weatherAdapter
+        }
+
+        binding.rvToday.apply {
+            weatherTodayAdapter = WeatherTodayAdapter()
+            layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+            setHasFixedSize(true)
+            adapter = weatherTodayAdapter
+        }
+    }
+
 
     override fun onQueryTextSubmit(query: String?): Boolean {
 

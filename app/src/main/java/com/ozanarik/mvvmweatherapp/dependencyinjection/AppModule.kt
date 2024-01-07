@@ -1,10 +1,13 @@
 package com.ozanarik.mvvmweatherapp.dependencyinjection
 
 import android.content.Context
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.ozanarik.mvvmweatherapp.business.remote.WeatherApi
+import com.ozanarik.mvvmweatherapp.business.repository.LocationRepository
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
 import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.BASE_URL
 import com.ozanarik.mvvmweatherapp.utils.DataStoreManager
+import com.ozanarik.mvvmweatherapp.utils.LocationUtility
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +33,16 @@ class AppModule {
     @Singleton
     fun provideContext(@ApplicationContext context:Context):Context{
         return context
+    }
+    @Provides
+    @Singleton
+    fun provideLocationRepository(@ApplicationContext context:Context,locationUtility: LocationUtility):LocationRepository{
+        return LocationRepository(context = context, locationUtility = locationUtility )
+    }
+    @Provides
+    @Singleton
+    fun provideLocationUtility():LocationUtility{
+        return LocationUtility()
     }
 
     @Provides

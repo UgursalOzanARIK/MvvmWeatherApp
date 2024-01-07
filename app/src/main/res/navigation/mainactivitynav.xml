@@ -10,20 +10,10 @@
         android:name="com.ozanarik.mvvmweatherapp.ui.fragments.WeatherForecastFragment"
         android:label="fragment_weather_forecast"
         tools:layout="@layout/fragment_weather_forecast">
-
-
         <action
-            android:id="@+id/firstTimeAppOpeningToWeatherForecastFragment"
-            app:destination="@+id/weatherForecastFragment"
-            >
-
-
-        </action>
-
-
-
+            android:id="@+id/action_weatherForecastFragment_to_firstTimeAppOpening"
+            app:destination="@id/firstTimeAppOpening" />
     </fragment>
-
 
 
     <fragment
@@ -35,9 +25,14 @@
             android:id="@+id/action_settingsFragment_to_weatherForecastFragment"
             app:destination="@id/weatherForecastFragment" />
     </fragment>
-    <activity
+    <fragment
         android:id="@+id/firstTimeAppOpening"
-        android:name="com.ozanarik.mvvmweatherapp.ui.mainactivity.FirstTimeAppOpening"
-        android:label="activity_first_time_app_opening"
-        tools:layout="@layout/activity_first_time_app_opening" />
+        android:name="com.ozanarik.mvvmweatherapp.ui.fragments.FirstTimeAppOpening"
+        android:label="fragment_first_time_app_opening"
+        tools:layout="@layout/fragment_first_time_app_opening" >
+        <action
+            android:id="@+id/action_firstTimeAppOpening_to_weatherForecastFragment"
+            app:destination="@id/weatherForecastFragment" />
+    </fragment>
+
 </navigation>

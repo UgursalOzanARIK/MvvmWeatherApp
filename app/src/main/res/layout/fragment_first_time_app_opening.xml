@@ -4,60 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/weeklyweatherforecastbg">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_first_time_app_install"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:backgroundTint="#7011072B"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@drawable/weathertodaycardviewbg"
+    tools:context=".ui.fragments.FirstTimeAppOpening">
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="128dp"
         android:layout_marginEnd="32dp"
         android:fontFamily="@font/raleway_semibold"
-        android:text="If it is your first time opening MvvmWeatherApp, Please consider enabling location services by clicking on the location icon on the upper right hand corner to get forecast data. Location permission required to use this application"
+        android:text="It seems like you haven't enabled location services and granted permission for location. Please tap on the button below to run the permissions. MvvmWeatherApp needs location services to run"
         android:textAlignment="center"
-        android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/buttonEnableLocation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_first_time_app_install" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
 
     <Button
-        android:id="@+id/buttonEnableLocation"
+        android:id="@+id/buttonGrantPerms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="40dp"
         android:backgroundTint="@color/white"
-        android:fontFamily="@font/raleway_semibold"
+        android:text="Grant Permission"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="14sp"
         android:textStyle="bold"
         app:icon="@drawable/baseline_location_on_24"
+        app:iconPadding="32dp"
         app:iconSize="35dp"
         app:iconTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:strokeWidth="2dp"
-        tools:text="Enable Location" />
-
+        app:rippleColor="@color/darkblue"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
