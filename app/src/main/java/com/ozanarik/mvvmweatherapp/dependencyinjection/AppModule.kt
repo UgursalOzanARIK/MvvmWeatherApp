@@ -1,7 +1,6 @@
 package com.ozanarik.mvvmweatherapp.dependencyinjection
 
 import android.content.Context
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.ozanarik.mvvmweatherapp.business.remote.WeatherApi
 import com.ozanarik.mvvmweatherapp.business.repository.LocationRepository
 import com.ozanarik.mvvmweatherapp.business.repository.WeatherForecastRepository
@@ -80,7 +79,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideDataStore(@ApplicationContext context:Context):DataStoreManager{
+    fun provideDataStore(@ApplicationContext context:Context): DataStoreManager {
         return DataStoreManager(context)
     }
 

@@ -2,10 +2,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:alpha="1"
-    android:background="@drawable/weeklyweatherforecastbg"
+    android:background="@drawable/weathertodaycardviewbg"
     tools:context=".ui.fragments.WeatherForecastFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,12 +29,14 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewNow"
             android:layout_width="0dp"
-            android:layout_height="500dp"
-            android:layout_marginStart="4dp"
+            android:layout_height="550dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="96dp"
-            android:layout_marginEnd="4dp"
-            app:cardCornerRadius="20dp"
-            app:cardUseCompatPadding="true"
+            android:layout_marginEnd="8dp"
+            android:alpha="1"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="5dp"
+            app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -42,16 +44,16 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="1"
-                android:background="@drawable/weathertodaycardviewbg">
+
+                >
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvToday"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_marginStart="32dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +63,7 @@
                     android:id="@+id/tvCityName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="32dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
                     android:textColor="@color/white"
@@ -107,7 +109,7 @@
                     android:layout_width="0dp"
                     android:layout_height="1dp"
                     android:layout_marginStart="32dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginEnd="32dp"
                     android:layout_marginBottom="4dp"
                     android:alpha="0.5"
@@ -135,10 +137,12 @@
                     android:id="@+id/imageViewHumidity"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="64dp"
+                    android:layout_marginEnd="16dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/humidity"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewNowIcon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvTempToday" />
 
@@ -146,16 +150,16 @@
                     android:id="@+id/tvHumidity"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="68dp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="12sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@+id/view2"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewNowIcon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -163,8 +167,9 @@
                     android:id="@+id/textView7"
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="Humidity"
                     android:textAlignment="center"
@@ -172,6 +177,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold|italic"
+                    app:layout_constraintEnd_toStartOf="@+id/imageViewNowIcon"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewHumidity" />
 
@@ -179,10 +185,12 @@
                     android:id="@+id/imageViewWind"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="64dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="16dp"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewNowIcon"
                     app:layout_constraintTop_toBottomOf="@+id/tvTempToday"
                     tools:src="@drawable/wind" />
 
@@ -190,8 +198,9 @@
                     android:id="@+id/textView8"
                     android:layout_width="95dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="Wind Speed"
                     android:textAlignment="center"
@@ -199,14 +208,16 @@
                     android:textSize="14sp"
                     android:textStyle="bold|italic"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageViewNowIcon"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewWind" />
 
                 <TextView
                     android:id="@+id/tvWind"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="68dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
@@ -216,7 +227,9 @@
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/view2"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                    app:layout_constraintStart_toEndOf="@+id/imageViewNowIcon"
+                    app:layout_constraintTop_toBottomOf="@+id/textView8"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <ImageView
                     android:id="@+id/imageViewNowIcon"
@@ -230,18 +243,35 @@
                     app:layout_constraintTop_toBottomOf="@+id/tvDescription"
                     tools:src="@tools:sample/avatars" />
 
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:fontFamily="@font/raleway_semibold"
+                    android:text="Two Days"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/view2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewNowIcon" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardViewToday"
+            android:id="@+id/cardViewNextDays"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="325dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="48dp"
             android:layout_marginEnd="8dp"
-            app:cardCornerRadius="20dp"
-            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="5dp"
+            app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -250,8 +280,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="1"
-                android:background="@drawable/weathertodaycardviewbg">
+
+                >
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeather"
@@ -292,9 +322,9 @@
                     android:id="@+id/cardViewGetLocation"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    app:cardCornerRadius="100dp"
                     android:layout_marginEnd="16dp"
                     android:backgroundTint="@color/white"
+                    app:cardCornerRadius="100dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -326,10 +356,10 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/raleway_semibold"
-            android:text="Next Five Days Forecast"
+            android:text="Next Days"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="30sp"
@@ -337,5 +367,10 @@
             app:layout_constraintStart_toStartOf="@+id/loadingLottieAnim"
             app:layout_constraintTop_toBottomOf="@+id/cardViewNow" />
 
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </ScrollView>

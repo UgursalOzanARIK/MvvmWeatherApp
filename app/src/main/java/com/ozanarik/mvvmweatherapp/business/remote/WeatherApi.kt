@@ -16,4 +16,11 @@ interface WeatherApi {
         @Query("lon")longitude:String,
         @Query("appid")appid:String = APPID
                 ):Response<Forecast>
+
+    @GET("forecast?")
+    suspend fun getWeatherByCityName
+                (
+        @Query("q")q:String,
+        @Query("appid")appid: String = APPID
+                ):Response<Forecast>
 }

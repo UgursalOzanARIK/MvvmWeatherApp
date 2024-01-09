@@ -34,19 +34,6 @@ class LocationUtility  (
             return Pair(fineLocationPermission,coarseLocationPermission)
         }
 
-        fun requestPermissions(activity:Activity){
-
-            ActivityCompat.requestPermissions(activity, arrayOf(
-                fineLocationPermission,
-                coarseLocationPermission),
-                LOCATION_PERMISSION_REQUEST_CODE)
-        }
-
-    fun promptToEnableLocationService(context: Context){
-        val locationSettingsIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-        context.startActivity(locationSettingsIntent)
-    }
-
 
 
 

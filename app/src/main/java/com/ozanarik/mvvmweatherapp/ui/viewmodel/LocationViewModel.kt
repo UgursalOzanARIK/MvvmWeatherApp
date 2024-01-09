@@ -10,13 +10,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LocationViewModel @Inject constructor(private val locationRepository: LocationRepository) :ViewModel() {
 
-
     private val _locationServicesPermission:MutableStateFlow<Boolean> = MutableStateFlow(false)
     val locationServicesPermission:StateFlow<Boolean> = _locationServicesPermission
 
     private val _isGrantedLocationPermission:MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isGrantedLocationPermission:StateFlow<Boolean> = _isGrantedLocationPermission
-
     fun areLocationServicesEnabled(){
 
         when(locationRepository.areLocationServicesEnabled()){
@@ -29,17 +27,12 @@ class LocationViewModel @Inject constructor(private val locationRepository: Loca
         }
     }
 
-
     fun isLocationPermissionGranted(){
         val isGrantedLocationPermission = locationRepository.isLocationPermissionGranted()
 
         val fineLocationPermission = isGrantedLocationPermission.first
         val coarseLocationPermission = isGrantedLocationPermission.second
-
-
         _isGrantedLocationPermission.value = fineLocationPermission && coarseLocationPermission
     }
-
-
 
 }

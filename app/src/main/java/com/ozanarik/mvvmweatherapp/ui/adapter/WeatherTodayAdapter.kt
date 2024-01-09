@@ -47,8 +47,6 @@ class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayH
             val timeToday = currentWeather.dtTxt!!.substring(11,16)
             val temp = currentWeather.main!!.temp!!.kelvinToCelsius()
 
-
-
             tvNow.text = timeToday
             tvTempNow.text = "$temp °C"
             tvDateToday.text = currentWeather.dtTxt!!.substring(0,11)

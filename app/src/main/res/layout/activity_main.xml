@@ -5,35 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.mainactivity.MainActivity">
+    tools:context=".ui.mainactivity.MainActivity"
+    >
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:alpha="1"
-        android:background="@color/darkgray"
-        android:isScrollContainer="false"
-        app:elevation="15dp"
-        app:itemIconSize="20dp"
-        app:itemIconTint="@color/white"
-        app:itemRippleColor="@color/orange"
-        app:itemTextColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottomnavigationmenu" />
+        app:menu="@menu/bottomnavigationmenu"
+        android:alpha="0.8"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"
+        app:itemRippleColor="@color/orange"
+        android:background="@drawable/weathertodaycardviewbg"
+        />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navHostFragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/bottomnavbg"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/mainactivitynav" />
+        app:navGraph="@navigation/mainactivitynav"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

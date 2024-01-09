@@ -1,11 +1,5 @@
 package com.ozanarik.mvvmweatherapp.ui.viewmodel
 
-import android.Manifest
-import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ozanarik.mvvmweatherapp.Forecast
@@ -15,11 +9,11 @@ import com.ozanarik.mvvmweatherapp.utils.DataStoreManager
 import com.ozanarik.mvvmweatherapp.utils.Resource
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -36,22 +30,35 @@ class WeatherViewModel @Inject constructor
     private val _forecastResponse:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastResponse:StateFlow<Resource<Forecast>> = _forecastResponse
 
+    private val _forecastByCityName:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
+    val forecastByCityName:StateFlow<Resource<Forecast>> = _forecastByCityName
+
+
+    private val _locationLatLon = MutableStateFlow(Pair(0.0,0.0))
+    val locationLatLon:StateFlow<Pair<Double,Double>> = _locationLatLon
+
+
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
     }
 
-    fun setLocationLatitudeLongitudeKeys(latitude:Double,longitude:Double)=viewModelScope.launch{
-        dataStoreManager.setLocationLatitudeLongitudeKeys(latitude, longitude)
-    }
-    fun getLocationLatitudeLongitudeKeys()=viewModelScope.launch {
-        dataStoreManager.getLocationLatitudeLongitudeKeys()
-    }
-
     fun setDarkMode(isDarkMode:Boolean)=viewModelScope.launch {
         dataStoreManager.setDarkMode(isDarkMode)
     }
-    fun getDarkMode()=dataStoreManager.getDarkMode()
+    fun getDarkMode()=dataStoreManager.getDarkModeKey()
+
+
+    suspend fun setLocationLatLonKeys(pair: Pair<Double,Double>){
+        dataStoreManager.setLatLon(pair)
+    }
+
+    fun getLocationLatLon()=viewModelScope.launch{
+        dataStoreManager.getLatitudeLongitudeKeys().collect{pair->
+
+            _locationLatLon.value = pair
+        }
+    }
 
 
     fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String)= viewModelScope.launch {
@@ -63,12 +70,12 @@ class WeatherViewModel @Inject constructor
 
             withContext(Dispatchers.Main){
 
-                weatherForecastResponse.collect{forecast->
+                weatherForecastResponse.collect{forecastResult->
 
-                    when(forecast){
+                    when(forecastResult){
 
-                        is Resource.Success->   _forecastResponse.value         =       Resource.Success(forecast.data!!)
-                        is Resource.Error->     _forecastResponse.value         =       Resource.Error(forecast.message!!)
+                        is Resource.Success->   _forecastResponse.value         =       Resource.Success(forecastResult.data!!)
+                        is Resource.Error->     _forecastResponse.value         =       Resource.Error(forecastResult.message!!)
                         is Resource.Loading->   _forecastResponse.value         =       Resource.Loading()
                     }
 
@@ -88,8 +95,37 @@ class WeatherViewModel @Inject constructor
         }
     }
 
+    fun getWeatherForecastByCityName(cityName:String)=viewModelScope.launch {
 
+       try {
+           val weatherForecastByCityNameResponse = withContext(Dispatchers.IO){
 
+               weatherForecastRepository.getWeatherForecastByCityName(cityName)
+           }
+
+           withContext(Dispatchers.Main){
+               weatherForecastByCityNameResponse.collect{forecastResult->
+
+                   when(forecastResult)
+                   {
+                       is Resource.Success  ->  _forecastByCityName.value = Resource.Success(forecastResult.data!!)
+                       is Resource.Error    ->  _forecastByCityName.value = Resource.Error(forecastResult.message!!)
+                       is Resource.Loading  ->  _forecastByCityName.value = Resource.Loading()
+                   }
+
+               }
+           }
+       }catch (e:Exception){
+           withContext(Dispatchers.Main){
+               _forecastByCityName.value = Resource.Error(e.localizedMessage?:e.message!!)
+           }
+
+       }catch (e:IOException){
+           withContext(Dispatchers.IO){
+               _forecastByCityName.value = Resource.Error(e.localizedMessage?:e.message!!)
+           }
+       }
+    }
     fun getWeatherIcon(weatherIconString: String):Int{
 
         return when(weatherIconString){

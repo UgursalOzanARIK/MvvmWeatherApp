@@ -1,6 +1,5 @@
 package com.ozanarik.mvvmweatherapp.utils
 
-import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.widget.Toast
@@ -31,19 +30,6 @@ fun Fragment.showSnackbar(message: String,actionText:String,actionCallback: (()-
     }
 }
 
-fun View.showSnackbar(message: String, actionText:String, length:Int = Snackbar.LENGTH_LONG, actionCallback:(()->Unit )?=null){
-
-    val snackBar = Snackbar.make(this,message,length)
-
-    actionText.let { action->
-
-        snackBar.setAction(action){
-            actionCallback?.invoke()
-    }
-    }
-    snackBar.show()
-}
-
 
 fun String.isSplittable(dataToCompare:String):Boolean{
     return this.split("\\s".toRegex()).contains(dataToCompare)
@@ -53,6 +39,10 @@ fun String.isSplittable(dataToCompare:String):Boolean{
 fun Double.kelvinToCelsius():Int{
 
     return this.minus(272.15).toInt()
+}
+
+fun String.substringData(startIndex:Int,endIndex:Int):String{
+    return this.substring(startIndex,endIndex)
 }
 
 fun View.makeVisible(){

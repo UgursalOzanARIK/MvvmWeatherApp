@@ -8,14 +8,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.WeatherItemListBinding
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 
 class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
@@ -50,11 +47,13 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
         holder.apply {
 
-            val temp = currentWeather.main!!.temp!!.minus(272.15).toInt()
-            val timeToday = "${currentWeather.dtTxt!!.substring(11,16)} / ${currentWeather.dtTxt!!.substring(0,11)}"
+            val temp = currentWeather.main!!.temp!!.kelvinToCelsius()
+            val timeNextDays = currentWeather.dtTxt!!.substring(0,11)
 
             binding.tvTemp.text = "$temp °C"
-            binding.tvDate.text = timeToday
+            binding.tvDate.text = timeNextDays
+            binding.tvMin.text = "Min ${currentWeather.main!!.tempMin?.kelvinToCelsius().toString()}°C "
+            binding.tvMax.text = "Max ${currentWeather.main!!.tempMax?.kelvinToCelsius().toString()}°C"
 
             currentWeather.weather[0].icon?.let { getWeatherIcon(it) }?.let { binding.imageViewIcon.setImageResource(it) }
         }
