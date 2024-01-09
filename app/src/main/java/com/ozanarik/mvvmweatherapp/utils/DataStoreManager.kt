@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -23,6 +24,7 @@ class DataStoreManager(context: Context) {
         private val darkModeKey = booleanPreferencesKey("isDarkMode")
         private val latitudeKey = doublePreferencesKey("latitudeKey")
         private val longitudeKey = doublePreferencesKey("longitudeKey")
+        private val searchedCityQuery = stringPreferencesKey("searchedKey")
 
     }
 
@@ -44,6 +46,18 @@ class DataStoreManager(context: Context) {
             darkMode
         }
     }
+
+    suspend fun setSearchedCityQuery(query:String){
+        dataStore.edit { prefs-> prefs[searchedCityQuery]= query }
+    }
+    fun getSearchedCityQuery():Flow<String>{
+        return dataStore.data.map {prefs->
+            val cityQuery = prefs[searchedCityQuery]?:"Ankara"
+            cityQuery
+        }
+    }
+
+
 
     suspend fun setLatLon(pair: Pair<Double,Double>){
         dataStore.edit { prefs->

@@ -14,17 +14,13 @@ import com.ozanarik.mvvmweatherapp.databinding.WeatherItemListBinding
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 
-class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
-
+class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>(){
     inner class WeatherHolder(val binding: WeatherItemListBinding):RecyclerView.ViewHolder(binding.root)
 
     private val diffUtilCallBack = object : DiffUtil.ItemCallback<WeatherList>(){
-
-
         override fun areItemsTheSame(oldItem: WeatherList, newItem: WeatherList): Boolean {
             return oldItem.pop == newItem.pop
         }
-
         override fun areContentsTheSame(oldItem: WeatherList, newItem: WeatherList): Boolean {
             return oldItem == newItem
         }
@@ -33,7 +29,6 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
     val differList = AsyncListDiffer(this,diffUtilCallBack)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherHolder {
-
         val layoutFrom = LayoutInflater.from(parent.context)
         val binding:WeatherItemListBinding = WeatherItemListBinding.inflate(layoutFrom,parent,false)
         return WeatherHolder(binding)
@@ -56,12 +51,10 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
             binding.tvMax.text = "Max ${currentWeather.main!!.tempMax?.kelvinToCelsius().toString()}°C"
 
             currentWeather.weather[0].icon?.let { getWeatherIcon(it) }?.let { binding.imageViewIcon.setImageResource(it) }
+
         }
     }
-
     private fun getWeatherIcon(weatherIconString: String):Int{
-
-
         return when(weatherIconString){
 
             WeatherIconHelperClass.CLEAR_SKY.weatherIconString->R.drawable.clearsky
@@ -78,10 +71,7 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>() {
 
             else -> {R.drawable.clearsky}
         }
-
     }
-
-
     override fun getItemCount(): Int {
 
         return differList.currentList.size

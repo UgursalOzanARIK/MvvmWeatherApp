@@ -37,10 +37,24 @@ class WeatherViewModel @Inject constructor
     private val _locationLatLon = MutableStateFlow(Pair(0.0,0.0))
     val locationLatLon:StateFlow<Pair<Double,Double>> = _locationLatLon
 
+    private val _searchedCityQuery:MutableStateFlow<String> = MutableStateFlow("Ankara")
+    val searchedCityQuery:StateFlow<String> = _searchedCityQuery
+
 
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
+    }
+
+
+    fun setSearchedCityQuery(cityQuery:String)=viewModelScope.launch {
+        dataStoreManager.setSearchedCityQuery(cityQuery)
+    }
+    fun getSearchedCityQuery()=viewModelScope.launch{
+
+        dataStoreManager.getSearchedCityQuery().collect{query->
+            getWeatherForecastByCityName(query)
+        }
     }
 
     fun setDarkMode(isDarkMode:Boolean)=viewModelScope.launch {
