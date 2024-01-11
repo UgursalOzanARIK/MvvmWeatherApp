@@ -58,22 +58,10 @@ class DataStoreManager(context: Context) {
     }
 
 
-
-    suspend fun setLatLon(pair: Pair<Double,Double>){
+    suspend fun deleteSearchedCityQuery(){
         dataStore.edit { prefs->
-            prefs[latitudeKey] = pair.first
-            prefs[longitudeKey] = pair.second
+            prefs.remove(searchedCityQuery)
         }
     }
 
-    fun getLatitudeLongitudeKeys():Flow<Pair<Double,Double>> {
-
-        return dataStore.data.map { prefs->
-
-            val latKey = prefs[latitudeKey]?:0.0
-            val lonKey = prefs[longitudeKey]?:0.0
-
-            Pair(latKey,lonKey)
-        }
-    }
 }

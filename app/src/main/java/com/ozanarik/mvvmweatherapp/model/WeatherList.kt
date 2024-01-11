@@ -1,6 +1,7 @@
 package com.ozanarik.mvvmweatherapp
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
 data class WeatherList (
@@ -15,4 +16,4 @@ data class WeatherList (
   @SerializedName("sys"        ) var sys        : Sys?               = Sys(),
   @SerializedName("dt_txt"     ) var dtTxt      : String?            = null
 
-)
+):Serializable

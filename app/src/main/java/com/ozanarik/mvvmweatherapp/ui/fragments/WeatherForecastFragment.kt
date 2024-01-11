@@ -1,6 +1,8 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
 import android.Manifest
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -27,16 +29,15 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherForecastBinding
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapter
-import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherAdapterRvClickListener
 import com.ozanarik.mvvmweatherapp.ui.adapter.WeatherTodayAdapter
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.LocationViewModel
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
@@ -52,20 +53,19 @@ import com.ozanarik.mvvmweatherapp.utils.substringData
 import com.ozanarik.mvvmweatherapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @AndroidEntryPoint
-class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
+class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,WeatherAdapter.OnItemClickListener{
+
     private lateinit var weatherViewModel: WeatherViewModel
     private lateinit var binding: FragmentWeatherForecastBinding
     private lateinit var weatherAdapter: WeatherAdapter
     private lateinit var weatherTodayAdapter: WeatherTodayAdapter
     private lateinit var locationViewModel: LocationViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -75,13 +75,12 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
         // Inflate the layout for this fragment
         binding = FragmentWeatherForecastBinding.inflate(inflater,container,false)
         initiateVariables()
-
+        setUpWeatherRecyclerView()
         return (binding.root)
-    }
 
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpWeatherRecyclerView()
 
         requireActivity().addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -97,20 +96,42 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             }
         },viewLifecycleOwner,Lifecycle.State.RESUMED)
 
+
+        animateCardViews()
+        controlSearchBarForecastOrLocationForecast()
         checkDarkMode()
         setupToolbar()
+
+
         binding.cardViewGetLocation.setOnClickListener {
             checkLocationServicesEnabled()
         }
     }
+
+
+
+    private fun controlSearchBarForecastOrLocationForecast(){
+
+        weatherViewModel.getSearchedCityQuery()
+        viewLifecycleOwner.lifecycleScope.launch {
+            weatherViewModel.searchedCityQuery.collect{weatherQuery->
+
+                Log.e("asd",weatherQuery)
+
+                if (weatherQuery.isEmpty()){
+                    checkLocationServicesEnabled()
+                }else{
+                    getWeatherForecastByCityName(weatherQuery)
+                }
+            }
+        }
+    }
+
     private fun setupToolbar(){
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.toolbar.title = "Forecast"
         binding.toolbar.setTitleTextColor(Color.WHITE)
-
     }
-
-
     private fun checkLocationServicesEnabled(){
 
         locationViewModel.areLocationServicesEnabled()
@@ -128,7 +149,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             }
         }
     }
-
     private fun checkPermissions(){
 
         locationViewModel.isLocationPermissionGranted()
@@ -148,9 +168,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
                                     val latitude = location.latitude
                                     val longitude =location.longitude
 
-                                    viewLifecycleOwner.lifecycleScope.launch {
-                                        weatherViewModel.setLocationLatLonKeys(Pair(latitude,longitude))
-                                    }
                                     getWeatherForecast(latitude.toString(),longitude.toString(),false)
                                     getWeatherForecast(latitude.toString(),longitude.toString(),true)
                                 }
@@ -170,14 +187,12 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             }
         }
     }
-
     private fun requirePermission(){
         ActivityCompat.requestPermissions(requireActivity(), arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION),
             LOCATION_PERMISSION_REQUEST_CODE)
     }
-
     private fun showEnableLocationServiceDialog(){
 
         val alertDialogBuilder = AlertDialog.Builder(requireContext()).apply {
@@ -196,7 +211,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             create().show()
         }
     }
-
     private fun getWeatherForecast(latitude: String, longitude: String,isTodayTomorrow:Boolean){
         weatherViewModel.getWeatherForecastByLatitudeLongitude(latitude,longitude)
         viewLifecycleOwner.lifecycleScope.launch {
@@ -205,7 +219,7 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
                 when(forecastResult){
                     is Resource.Success->{
 
-                        val forecastList = forecastResult.data!!.list
+                        val forecastList = forecastResult.data!!.weatherList
 
                         val today = LocalDate.now()
                         val todayDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
@@ -231,7 +245,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
                             weatherAdapter.differList.submitList(nextDaysList)
                         }
 
-
                         binding.tvCityName.text = forecastResult.data.city!!.name
                         binding.loadingLottieAnim.makeInvisible()
                     }
@@ -246,7 +259,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             }
         }
     }
-
     private fun updateUI(todayList:List<WeatherList>){
         binding.apply {
 
@@ -286,11 +298,16 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
     private fun setUpWeatherRecyclerView(){
 
         binding.rvWeather.apply {
-            weatherAdapter = WeatherAdapter()
+            weatherAdapter = WeatherAdapter(object : WeatherAdapter.OnItemClickListener{
+                override fun onItemClicked(weatherData: WeatherList) {
+                    val weatherDataToPass = WeatherForecastFragmentDirections.actionWeatherForecastFragmentToWeatherDetailFragment(weatherData)
+                    findNavController().navigate(weatherDataToPass)
+                }
+
+            })
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = weatherAdapter
-
         }
 
         binding.rvToday.apply {
@@ -300,27 +317,21 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
             adapter = weatherTodayAdapter
         }
     }
-    private fun getWeatherForecastByCityName(cityName:String){
-        weatherViewModel.getWeatherForecastByCityName(cityName)
+    private fun getWeatherForecastByCityName(city:String){
+        weatherViewModel.getWeatherForecastByCityName(city)
         viewLifecycleOwner.lifecycleScope.launch {
             weatherViewModel.forecastByCityName.collect{forecastResponse->
                 when(forecastResponse){
                     is Resource.Success-> {
-
-                        val cityNameQuery = forecastResponse.data!!.city!!.name
-                        cityNameQuery?.let { weatherViewModel.setSearchedCityQuery(it) }
-
-                        Log.e("asd",forecastResponse.data.toString())
 
                         val today = LocalDate.now()
                         val todayDate = today.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                         val tomorrow = today.plusDays(1)
                         val tomorrowDate = tomorrow.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
-
                         val todayList = mutableListOf<WeatherList>()
                         val nextDaysList = mutableListOf<WeatherList>()
-                        val forecastList = forecastResponse.data.list
+                        val forecastList = forecastResponse.data!!.weatherList
 
                         forecastList.forEach { weatherList->
 
@@ -338,7 +349,6 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
                         binding.tvCityName.text = forecastResponse.data.city!!.name
                         updateUI(todayList)
                         binding.loadingLottieAnim.makeInvisible()
-
                     }
                     is Resource.Error  -> toast(forecastResponse.message!!)
                     is Resource.Loading-> {
@@ -352,11 +362,32 @@ class WeatherForecastFragment : Fragment(),SearchView.OnQueryTextListener{
     override fun onQueryTextSubmit(query: String?): Boolean {
 
         query?.let { getWeatherForecastByCityName(it) }
+        query?.let { weatherViewModel.setSearchedCityQuery(it) }
 
         return true
     }
     override fun onQueryTextChange(newText: String?): Boolean {
         return false
+    }
+    override fun onItemClicked(weatherData: WeatherList) {
+
+    }
+
+
+
+    private fun animateCardViews(){
+
+        val cardViewNowAnimAlpha = ObjectAnimator.ofFloat(binding.cardViewNow,"alpha",0.0f,1.0f)
+        val cardViewNowAnimTranslationY = ObjectAnimator.ofFloat(binding.cardViewNow,"translationX",-900.0f,0.0f)
+        val cardViewNextDaysAnimAlpha = ObjectAnimator.ofFloat(binding.cardViewNow,"alpha",0.0f,1.0f)
+        val cardViewNextDaysTranslationY = ObjectAnimator.ofFloat(binding.cardViewNow,"translationX",-900.0f,0.0f)
+
+        val multiAnim = AnimatorSet().apply {
+
+            playTogether(cardViewNowAnimAlpha,cardViewNowAnimTranslationY,cardViewNextDaysAnimAlpha,cardViewNextDaysTranslationY)
+            duration = 800L
+        }
+        multiAnim.start()
     }
 
 }

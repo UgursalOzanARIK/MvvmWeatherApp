@@ -50,6 +50,11 @@ class WeatherViewModel @Inject constructor
     fun setSearchedCityQuery(cityQuery:String)=viewModelScope.launch {
         dataStoreManager.setSearchedCityQuery(cityQuery)
     }
+
+    fun deleteSearchedCityQuery()=viewModelScope.launch {
+        dataStoreManager.deleteSearchedCityQuery()
+    }
+
     fun getSearchedCityQuery()=viewModelScope.launch{
 
         dataStoreManager.getSearchedCityQuery().collect{query->
@@ -61,18 +66,6 @@ class WeatherViewModel @Inject constructor
         dataStoreManager.setDarkMode(isDarkMode)
     }
     fun getDarkMode()=dataStoreManager.getDarkModeKey()
-
-
-    suspend fun setLocationLatLonKeys(pair: Pair<Double,Double>){
-        dataStoreManager.setLatLon(pair)
-    }
-
-    fun getLocationLatLon()=viewModelScope.launch{
-        dataStoreManager.getLatitudeLongitudeKeys().collect{pair->
-
-            _locationLatLon.value = pair
-        }
-    }
 
 
     fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String)= viewModelScope.launch {
@@ -108,7 +101,6 @@ class WeatherViewModel @Inject constructor
             }
         }
     }
-
     fun getWeatherForecastByCityName(cityName:String)=viewModelScope.launch {
 
        try {
@@ -159,8 +151,33 @@ class WeatherViewModel @Inject constructor
 
             else -> {
                 R.drawable.clearsky}
-                    }
         }
+    }
+
+    fun getWeatherAnimForLottie(weatherIcon:String):Int{
+
+        return when(weatherIcon){
+
+            WeatherIconHelperClass.CLEAR_SKY.weatherIconString->R.raw.clearskyanim
+            WeatherIconHelperClass.FEW_CLOUDS.weatherIconString->R.raw.fewclouds
+            WeatherIconHelperClass.SCATTERED_CLOUDS.weatherIconString->R.raw.scatteredclouds
+            WeatherIconHelperClass.BROKEN_CLOUDS.weatherIconString->R.raw.scatteredclouds
+            WeatherIconHelperClass.SHOWER_RAIN.weatherIconString->R.raw.rain
+            WeatherIconHelperClass.THUNDERSTORM.weatherIconString->R.raw.thunderstorm
+            WeatherIconHelperClass.SNOW.weatherIconString->R.raw.snowy
+            WeatherIconHelperClass.MIST.weatherIconString->R.raw.fog
+            WeatherIconHelperClass.OVERCAST_CLOUDS.weatherIconString->R.raw.scatteredclouds
+            WeatherIconHelperClass.LIGHT_RAIN.weatherIconString->R.raw.rain
+            WeatherIconHelperClass.SCATTERED_CLOUDS_1.weatherIconString->R.raw.scatteredclouds
+
+            else -> {R.raw.clearskyanim}
+        }
+
+
+
+
+
+    }
 
 
 

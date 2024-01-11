@@ -30,12 +30,12 @@
             android:id="@+id/cardViewNow"
             android:layout_width="0dp"
             android:layout_height="550dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="96dp"
-            android:layout_marginEnd="8dp"
-            android:alpha="1"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardCornerRadius="5dp"
+            android:layout_marginEnd="16dp"
+            android:outlineSpotShadowColor="@color/black"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="25dp"
             app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
+                android:alpha="0.95"
+                android:background="@drawable/weathertodaycardviewbg"
                 >
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -266,11 +267,12 @@
             android:id="@+id/cardViewNextDays"
             android:layout_width="match_parent"
             android:layout_height="325dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="48dp"
-            android:layout_marginEnd="8dp"
-            app:cardBackgroundColor="@android:color/transparent"
-            app:cardCornerRadius="5dp"
+            android:layout_marginEnd="16dp"
+            android:outlineSpotShadowColor="@color/black"
+            app:cardCornerRadius="25dp"
+            app:cardElevation="25dp"
             app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -280,8 +282,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-
-                >
+                android:alpha="0.90"
+                android:background="@drawable/weathertodaycardviewbg">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeather"

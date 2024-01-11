@@ -8,14 +8,19 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.ozanarik.mvvmweatherapp.Forecast
 import com.ozanarik.mvvmweatherapp.R
 import com.ozanarik.mvvmweatherapp.WeatherList
 import com.ozanarik.mvvmweatherapp.databinding.WeatherItemListBinding
 import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 
-class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>(){
+class WeatherAdapter(private val clickListener: OnItemClickListener):RecyclerView.Adapter<WeatherAdapter.WeatherHolder>(){
+
+
+
     inner class WeatherHolder(val binding: WeatherItemListBinding):RecyclerView.ViewHolder(binding.root)
+
 
     private val diffUtilCallBack = object : DiffUtil.ItemCallback<WeatherList>(){
         override fun areItemsTheSame(oldItem: WeatherList, newItem: WeatherList): Boolean {
@@ -52,6 +57,10 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>(){
 
             currentWeather.weather[0].icon?.let { getWeatherIcon(it) }?.let { binding.imageViewIcon.setImageResource(it) }
 
+            itemView.setOnClickListener {
+                clickListener.onItemClicked(currentWeather)
+            }
+
         }
     }
     private fun getWeatherIcon(weatherIconString: String):Int{
@@ -76,4 +85,9 @@ class WeatherAdapter:RecyclerView.Adapter<WeatherAdapter.WeatherHolder>(){
 
         return differList.currentList.size
     }
+    interface OnItemClickListener{
+        fun onItemClicked(weatherData:WeatherList)
+    }
+
 }
+
