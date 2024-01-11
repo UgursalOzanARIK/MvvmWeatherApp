@@ -33,14 +33,6 @@ class WeatherViewModel @Inject constructor
     private val _forecastByCityName:MutableStateFlow<Resource<Forecast>> = MutableStateFlow(Resource.Loading())
     val forecastByCityName:StateFlow<Resource<Forecast>> = _forecastByCityName
 
-
-    private val _locationLatLon = MutableStateFlow(Pair(0.0,0.0))
-    val locationLatLon:StateFlow<Pair<Double,Double>> = _locationLatLon
-
-    private val _searchedCityQuery:MutableStateFlow<String> = MutableStateFlow("Ankara")
-    val searchedCityQuery:StateFlow<String> = _searchedCityQuery
-
-
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
@@ -50,23 +42,19 @@ class WeatherViewModel @Inject constructor
     fun setSearchedCityQuery(cityQuery:String)=viewModelScope.launch {
         dataStoreManager.setSearchedCityQuery(cityQuery)
     }
+    fun getSearchedCityQuery()=dataStoreManager.getSearchedCityQuery()
 
-    fun deleteSearchedCityQuery()=viewModelScope.launch {
-        dataStoreManager.deleteSearchedCityQuery()
-    }
-
-    fun getSearchedCityQuery()=viewModelScope.launch{
-
-        dataStoreManager.getSearchedCityQuery().collect{query->
-            getWeatherForecastByCityName(query)
-        }
-    }
+    fun deleteSearchedCityQuery()=viewModelScope.launch { dataStoreManager.deleteSearchedCityQuery() }
 
     fun setDarkMode(isDarkMode:Boolean)=viewModelScope.launch {
         dataStoreManager.setDarkMode(isDarkMode)
     }
     fun getDarkMode()=dataStoreManager.getDarkModeKey()
 
+    fun setLocationLatLonKeys(latitude:Double,longitude:Double)=viewModelScope.launch {
+        dataStoreManager.setLatLonKeys(latitude,longitude)
+    }
+    fun getLocationLatLonKeys()=dataStoreManager.getLocationLatLonKeys()
 
     fun getWeatherForecastByLatitudeLongitude(lat:String,lon:String)= viewModelScope.launch {
 
@@ -178,8 +166,5 @@ class WeatherViewModel @Inject constructor
 
 
     }
-
-
-
 
 }

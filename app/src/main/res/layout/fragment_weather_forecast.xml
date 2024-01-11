@@ -5,7 +5,7 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/weathertodaycardviewbg"
+    android:background="@color/cardWeatherBg"
     tools:context=".ui.fragments.WeatherForecastFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,11 +29,11 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardViewNow"
             android:layout_width="0dp"
-            android:layout_height="550dp"
+            android:layout_height="600dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="96dp"
             android:layout_marginEnd="16dp"
-            android:outlineSpotShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/orange"
             app:cardCornerRadius="25dp"
             app:cardElevation="25dp"
             app:cardUseCompatPadding="false"
@@ -44,9 +44,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:alpha="0.95"
-                android:background="@drawable/weathertodaycardviewbg"
-                >
+                android:alpha="0.90"
+                android:background="@color/cardWeatherBg">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvToday"
@@ -67,7 +66,7 @@
                     android:layout_marginTop="32dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
-                    android:textColor="@color/white"
+                    style="@style/textView_Color"
                     android:textSize="36sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +82,7 @@
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
                     android:textAlignment="center"
-                    android:textColor="@color/white"
+                    style="@style/textView_Color"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -98,7 +97,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="TextView"
-                    android:textColor="@color/white"
+                    style="@style/textView_Color"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -253,7 +252,7 @@
                     android:layout_marginBottom="32dp"
                     android:fontFamily="@font/raleway_semibold"
                     android:text="Two Days"
-                    android:textColor="@color/black"
+                    style="@style/textView_Color"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/view2"
@@ -283,7 +282,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0.90"
-                android:background="@drawable/weathertodaycardviewbg">
+                android:background="@color/cardWeatherBg">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvWeather"
@@ -363,7 +362,7 @@
             android:fontFamily="@font/raleway_semibold"
             android:text="Next Days"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            style="@style/textView_Color"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/loadingLottieAnim"

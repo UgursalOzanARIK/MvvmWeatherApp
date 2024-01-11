@@ -16,7 +16,10 @@
     <color name="lightblue">#1E88E5</color>
     <color name="bluish">#2C3E50</color>
     <color name="transparent">#10FFFFFF</color>
-    <color name="cardWeatherBg" tools:ignore="ReferenceType">@drawable/weeklyweatherforecastbg</color>
+
+
+    <color name="cardWeatherBg" tools:ignore="ReferenceType">@drawable/weathertodaycardviewbg</color>
+
 
 
 

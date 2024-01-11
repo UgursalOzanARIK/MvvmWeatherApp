@@ -9,15 +9,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.BounceInterpolator
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.ozanarik.mvvmweatherapp.databinding.FragmentWeatherDetailBinding
 import com.ozanarik.mvvmweatherapp.ui.viewmodel.WeatherViewModel
-import com.ozanarik.mvvmweatherapp.utils.Constants.Companion.OBJECT_ANIMATION_DURATION
-import com.ozanarik.mvvmweatherapp.utils.ObjectAnimationManager
 import com.ozanarik.mvvmweatherapp.utils.capitalizeWords
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 import com.ozanarik.mvvmweatherapp.utils.substringData
@@ -71,11 +67,11 @@ class WeatherDetailFragment : Fragment() {
     private fun animateWeatherDetailCardView(){
         val cardAnimation = ObjectAnimator.ofFloat(binding.cardViewWeatherDetailData,"alpha",0.0f,1.0f)
         val lottieAnimation = ObjectAnimator.ofFloat(binding.lottieAnimationView,"alpha",0.0f,1.0f)
-        val cardYTranslationFromDownside = ObjectAnimator.ofFloat(binding.cardViewWeatherDetailData,"translationY",0.0f,-100.0f)
+        val cardYTranslationFromDownside = ObjectAnimator.ofFloat(binding.cardViewWeatherDetailData,"translationY",0.0f,-75.0f)
 
         val multiAnim = AnimatorSet().apply {
 
-            duration = 650L
+            duration = 1500L
 
             playTogether(cardYTranslationFromDownside,cardAnimation,lottieAnimation)
         }

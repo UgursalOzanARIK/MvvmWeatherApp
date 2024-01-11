@@ -13,10 +13,7 @@ import com.ozanarik.mvvmweatherapp.utils.WeatherIconHelperClass
 import com.ozanarik.mvvmweatherapp.utils.kelvinToCelsius
 
 class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayHolder>() {
-
-
     inner class WeatherTodayHolder(val binding: WeatherTodayItemListBinding):RecyclerView.ViewHolder(binding.root)
-
 
     private val diffUtil = object : DiffUtil.ItemCallback<WeatherList>(){
         override fun areItemsTheSame(oldItem: WeatherList, newItem: WeatherList): Boolean {
@@ -27,15 +24,12 @@ class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayH
             return oldItem == newItem
         }
     }
-
     val differList = AsyncListDiffer(this,diffUtil)
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherTodayHolder {
         val layoutFrom = LayoutInflater.from(parent.context)
         val binding:WeatherTodayItemListBinding = WeatherTodayItemListBinding.inflate(layoutFrom,parent,false)
         return WeatherTodayHolder(binding)
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -52,18 +46,13 @@ class WeatherTodayAdapter:RecyclerView.Adapter<WeatherTodayAdapter.WeatherTodayH
             tvDateToday.text = currentWeather.dtTxt!!.substring(0,11)
 
             imageViewToday.setImageResource(getWeatherIcon(currentWeather.weather[0].icon!!))
-
-
         }
-
     }
 
     override fun getItemCount(): Int {
         return differList.currentList.size
 
     }
-
-
     private fun getWeatherIcon(weatherIcon:String):Int{
 
         return when(weatherIcon){
