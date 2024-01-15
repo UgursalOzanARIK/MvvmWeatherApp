@@ -30,7 +30,6 @@ fun Fragment.showSnackbar(message: String,actionText:String,actionCallback: (()-
     }
 }
 
-
 fun String.isSplittable(dataToCompare:String):Boolean{
     return this.split("\\s".toRegex()).contains(dataToCompare)
 }
@@ -62,9 +61,4 @@ fun String?.capitalizeWords():String{
             char.uppercaseChar()
         }
     }?:""
-
-
-
-
-
 }

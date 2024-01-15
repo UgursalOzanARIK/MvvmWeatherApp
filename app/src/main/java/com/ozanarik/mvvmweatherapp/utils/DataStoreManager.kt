@@ -10,10 +10,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 class DataStoreManager(context: Context) {
@@ -75,7 +73,7 @@ class DataStoreManager(context: Context) {
         return dataStore.data.map {prefs->
             val cityQuery = prefs[searchedCityQuery]?:""
             cityQuery
-        }.flowOn(Dispatchers.IO)
+        }
     }
 
 

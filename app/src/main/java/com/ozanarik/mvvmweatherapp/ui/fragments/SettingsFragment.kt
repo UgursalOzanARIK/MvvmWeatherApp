@@ -1,5 +1,7 @@
 package com.ozanarik.mvvmweatherapp.ui.fragments
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -87,10 +89,15 @@ class SettingsFragment : Fragment() {
                         binding.tvSwitch.text = "Dark Mode"
                         binding.lottieAnim.playAnimation()
                         binding.lottieAnim.setMaxProgress(0.4f)
-                        delay(1500L)
-
-                        binding.lottieAnim.makeInvisible()
-
+                        delay(500L)
+                        val anim = ObjectAnimator.ofFloat(binding.lottieAnim,"alpha",1.0f,0.0f)
+                        val scaleX = ObjectAnimator.ofFloat(binding.lottieAnim,"scaleX",1.0f,0.0f)
+                        val scaleY = ObjectAnimator.ofFloat(binding.lottieAnim,"scaleY",1.0f,0.0f)
+                        val multiAnim = AnimatorSet().apply {
+                            playTogether(anim,scaleX,scaleY)
+                            duration = 800L
+                        }
+                        multiAnim.start()
                     }
                     false->{
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -99,8 +106,15 @@ class SettingsFragment : Fragment() {
                         binding.lottieAnim.setAnimation(R.raw.night)
                         binding.lottieAnim.playAnimation()
                         binding.lottieAnim.setMinProgress(0.4f)
-                        delay(1500L)
-                        binding.lottieAnim.makeInvisible()
+                        delay(500L)
+                        val anim = ObjectAnimator.ofFloat(binding.lottieAnim,"alpha",1.0f,0.0f)
+                        val scaleX = ObjectAnimator.ofFloat(binding.lottieAnim,"scaleX",1.0f,0.0f)
+                        val scaleY = ObjectAnimator.ofFloat(binding.lottieAnim,"scaleY",1.0f,0.0f)
+                        val multiAnim = AnimatorSet().apply {
+                            playTogether(anim,scaleX,scaleY)
+                            duration = 800L
+                        }
+                        multiAnim.start()
 
                     }
                 }

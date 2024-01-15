@@ -52,7 +52,6 @@ import com.ozanarik.mvvmweatherapp.utils.showSnackbar
 import com.ozanarik.mvvmweatherapp.utils.substringData
 import com.ozanarik.mvvmweatherapp.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -106,18 +105,19 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
         setupToolbar()
 
         binding.cardViewGetLocation.setOnClickListener {
-            checkLocationServicesEnabled()
             weatherViewModel.deleteSearchedCityQuery()
+            checkLocationServicesEnabled()
+
         }
     }
 
     private fun controlSearchBarForecastOrLocationForecast(){
 
-        weatherViewModel.getSearchedCityQuery()
         viewLifecycleOwner.lifecycleScope.launch {
             weatherViewModel.getSearchedCityQuery().collect{weatherQuery->
 
                 if (weatherQuery.isEmpty()){
+                    Log.e("weatherquery","is empty $weatherQuery")
                     weatherViewModel.getLocationLatLonKeys().collect{locationPair->
 
                         val (latitude,longitude) = locationPair
@@ -125,7 +125,6 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
                         getWeatherForecast(latitude.toString(),longitude.toString(),true)
                         getWeatherForecast(latitude.toString(),longitude.toString(),false)
                     }
-
                 }else{
                     getWeatherForecastByCityName(weatherQuery)
                 }
@@ -156,7 +155,6 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
         }
     }
     private fun checkPermissions(){
-
         locationViewModel.isLocationPermissionGranted()
         viewLifecycleOwner.lifecycleScope.launch {
             locationViewModel.isGrantedLocationPermission.collect{locationPerm->
@@ -174,8 +172,9 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
                                     val latitude = location.latitude
                                     val longitude =location.longitude
 
-                                    getWeatherForecast(latitude.toString(),longitude.toString(),false)
-                                    getWeatherForecast(latitude.toString(),longitude.toString(),true)
+                                    if(latitude!= 0.0 && longitude!= 0.0){
+                                        weatherViewModel.setLocationLatLonKeys(latitude, longitude)
+                                    }
                                 }
                             }
                         }
@@ -251,8 +250,6 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
                             weatherAdapter.differList.submitList(nextDaysList)
                         }
 
-                        weatherViewModel.setLocationLatLonKeys(latitude.toDouble(),longitude.toDouble())
-
                         binding.tvCityName.text = forecastResult.data.city!!.name
                         binding.loadingLottieAnim.makeInvisible()
                     }
@@ -311,7 +308,6 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
                     val weatherDataToPass = WeatherForecastFragmentDirections.actionWeatherForecastFragmentToWeatherDetailFragment(weatherData)
                     findNavController().navigate(weatherDataToPass)
                 }
-
             })
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
@@ -368,10 +364,12 @@ class WeatherForecastFragment: Fragment(),SearchView.OnQueryTextListener,Weather
         }
     }
     override fun onQueryTextSubmit(query: String?): Boolean {
-
-        query?.let { getWeatherForecastByCityName(it) }
-        query?.let { weatherViewModel.setSearchedCityQuery(it) }
-
+        viewLifecycleOwner.lifecycleScope.launch {
+            if (query != ""){
+                query?.let { getWeatherForecastByCityName(it) }
+                query?.let { weatherViewModel.setSearchedCityQuery(it) }
+            }
+        }
         return true
     }
     override fun onQueryTextChange(newText: String?): Boolean {
