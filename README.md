@@ -4,8 +4,11 @@ An Mvvm Weather App created via Kotlin to get weather forecast information eithe
 # **Features**
 
 1.Light/Dark mode persistence through app restart
+
 2.Get weather forecast data by location
+
 3.Get weather forecast data by searching for a spesific city
+
 4.Weather detail page to see in-depth details of a spesific date of a location
 
 # **Tools**
