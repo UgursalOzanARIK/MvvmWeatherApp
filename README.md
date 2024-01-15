@@ -8,15 +8,32 @@ An Mvvm Weather App created via Kotlin to get weather forecast information eithe
 3.Get weather forecast data by searching for a spesific city
 4.Weather detail page to see in-depth details of a spesific date of a location
 
-#**Tools**
+# **Tools**
+
 1.Mvvm Architecture
+
+
 2.Kotlin coroutines/Flows
+
+
 3.Retrofit for api requests and gson for for parsing
+
+
 4.Datastore Preferences for data persistence
+
+
 5.Logging Interceptor for in detail api request information
+
+
 6.Lottie Animation for smooth animations
+
+
 7.Google location services
+
+
 8.Dagger Hilt for dependency injection
+
+
 9.Navigation Component
 
 
