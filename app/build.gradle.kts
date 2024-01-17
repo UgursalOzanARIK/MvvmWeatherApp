@@ -58,8 +58,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10")
 
     //LIVEDATA,LIFECYCLE
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     //HILT
     implementation("com.google.dagger:hilt-android:2.49")
